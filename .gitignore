@@ -105,3 +105,6 @@ venv.bak/
 
 # log stuff too
 *.log
+
+# text files too
+*.txt
