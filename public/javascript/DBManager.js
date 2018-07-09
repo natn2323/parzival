@@ -45,31 +45,31 @@ module.exports = {
 // Private functions
 function validateLoginWithDatabase(givenUsername, givenPassword) {
   return new Promise(function(resolve, reject) {
-    var stmt = db.all("SELECT username, password FROM loginInfo WHERE"
-      + " username=$username AND password=$password", {
-        $username: givenUsername,
-        $password: givenPassword
-      },
-      /* This is a callback function. After the above function completes, then
-         its data is delivered to this function. In this case, its data is an
-         error if an error is produced, or rows if no error is produced */
-      function(err, rows){
-        if(err) {
-          reject(err);
-        } else if (rows.length>0) { // Check that the result set is non-empty
-          // Do things with non-empty result set -- possibly return True
-          console.log("Accessed!");
-          console.log(rows[0]['username']);
-          console.log(rows[0]['password']);
-          resolve(true);
-        } else if(rows.length === 0) { // Dealing with empty result sets
-          // Do something when result set empty -- possibly return False
-          console.log("No result!\n"
-            + "Ergo, username and password don't check out!\n"
-            + "Bad u: %s, p: %s\n", givenUsername, givenPassword);
-          resolve(false);
-        }
-      });
+    db.all("SELECT username, password FROM loginInfo WHERE"
+    + " username=$username AND password=$password", {
+      $username: givenUsername,
+      $password: givenPassword
+    },
+    /* This is a callback function. After the above function completes, then
+       its data is delivered to this function. In this case, its data is an
+       error if an error is produced, or rows if no error is produced */
+    function(err, rows){
+      if(err) {
+        reject(err);
+      } else if (rows.length>0) { // Check that the result set is non-empty
+        // Do things with non-empty result set -- possibly return True
+        console.log("Accessed!");
+        console.log(rows[0]['username']);
+        console.log(rows[0]['password']);
+        resolve(true);
+      } else if(rows.length === 0) { // Dealing with empty result sets
+        // Do something when result set empty -- possibly return False
+        console.log("No result!\n"
+          + "Ergo, username and password don't check out!\n"
+          + "Bad u: %s, p: %s\n", givenUsername, givenPassword);
+        resolve(false);
+      }
+    });
   });
   // Currently only checking for existence of username and password
 
