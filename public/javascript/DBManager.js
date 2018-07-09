@@ -32,10 +32,13 @@ module.exports = {
         // 'let' has local scope
 				let username = data['username'],
 					  password = data['password'];
-				validateLoginWithDatabase(username, password);
+				var validated = validateLoginWithDatabase(username, password);
+				console.log(validateLoginWithDatabase(username, password));
+				//setInterval(function(){console.log('validated (DBManager): '+validated);}, 3000);
+				return validateLoginWithDatabase(username, password);
 			}
 		} else { // Fail to authenticate / data is lost(?)
-			  return
+			  return false;
 		}
 	}
 
@@ -61,11 +64,13 @@ function validateLoginWithDatabase(givenUsername, givenPassword) {
 					console.log("Accessed!");
 					console.log(rows[0]['username']);
 					console.log(rows[0]['password']);
+					return true;
 				} else if(rows.length === 0) { // Dealing with empty result sets
           // Do something when result set empty -- possibly return False
 					console.log("No result!\n"
 						+ "Ergo, username and password don't check out!\n"
 						+ "Bad u: %s, p: %s\n", givenUsername, givenPassword);
+					return false;
 				}
 			});
 	} catch(error) {

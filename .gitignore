@@ -109,6 +109,5 @@ venv.bak/
 # text files too
 *.txt
 
-# ignoring node_modules
+# nodemodules
 node_modules/
-
