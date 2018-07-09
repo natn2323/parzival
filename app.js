@@ -19,20 +19,6 @@ var database = require('./public/javascript/DBManager').init();
 var serverPort = 8124;
 http.createServer(function (request, response) {
 
-  /* Starting the server with the default page */
-  fs.readFile('public/html/signIn.html', function(err, data) {
-    if(err) {
-      response.writeHead(404, {'Content-Type': 'text/html'});
-      response.writeHead("404 Not Found\n");
-      response.end();
-    }
-    else if(data) {
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.write(data);
-      response.end();
-    }
-  });
-
   /* Passing HTTP requests and responses to our helper modules */
   dispatcher.deal(request, response);
 
