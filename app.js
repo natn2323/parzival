@@ -20,7 +20,7 @@ var serverPort = 8124;
 http.createServer(function (request, response) {
 
   /* Starting the server with the default page */
-  fs.readFile('index.html', function(err, data) {
+  fs.readFile('public/html/signIn.html', function(err, data) {
     if(err) {
       response.writeHead(404, {'Content-Type': 'text/html'});
       response.writeHead("404 Not Found\n");
