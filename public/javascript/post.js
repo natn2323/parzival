@@ -4,29 +4,28 @@ module.exports = {
 
 	doing: function(request, response, data) {
 		if(request.url === "/signedIn") {
-			// Perhaps use 'let' instead of 'var'
 			var si = require("./DBManager");
 			var validationPromise = si.validate(data);
-			var validated = undefined;
-			validationPromise.then(function(result) {
-				validated = result;
-
-				console.log("Promise validated: "+validated);
+			validationPromise.then(function(validated) {
+				if(validated) {
+					console.log("Validated!");
+					response.writeHead(301,
+						{Location: 'http://localhost:8124/menu'}
+					);
+					/* From documentation, after a "finish" event, no more events will be
+					  emitted on the response object */
+					response.end();
+				} else {
+					/* Not validated, maybe do some frontend response or send to
+					   loginError.html or the like */
+					response.writeHead(301,
+						{Location: 'http://localhost:8124'}
+					);
+					response.end();
+				}
 			}, function(err) {
 				console.log("Error from Promise: "+err)
 			});
-			/*console.log("Validated is: "+validated);
-			if (validated) {
-				console.log("Validated!");
-				/*var menu = require('public/html/menu.html');
-				//response.location = 'menu.html'
-				response.writeHead(200, {'Content-Type': 'text/html'});
-				response.write(menu);
-				response.end();
-			} else {
-				//response.redirect('loginError.html');
-				console.log("Not validated!");
-			}*/
 		} else {
 			// Deal with other URLs here
 		}
