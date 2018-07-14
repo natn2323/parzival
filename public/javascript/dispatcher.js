@@ -26,20 +26,31 @@ module.exports = {
          login screen by checking the 'referer', i.e. the previous page.
          Might be an issue later when we have more pages linked together. */
       if(request.url === "/") {
-        fs.readFile('./public/html/login.html', function(err, data) {
-        if(err) {
-          throw err;
-        } else {
-          response.writeHead(200, {'Content-Type': 'text/html'});
-          response.write(data);
-          response.end();
-        }
-        });
+        response.writeHead(301,
+          {Location: 'http://localhost:8124/login'}
+        );
+        response.end();
 
-      } else if(fs.existsSync(filepath)) { // This is blocking, synchronous code
-         // Associating URL with JavaScript file
-        var serving = require(filepath);
-        serving.handle(request, response, passed_data);
+      } else if(fs.existsSync(filepath)) {
+          var referer = request.headers['referer'];
+          if(referer) {
+            /* This is blocking, synchronous code.
+               Associating URL with JavaScript file. */
+            var serving = require(filepath);
+            serving.handle(request, response, passed_data);
+          } else {
+            fs.readFile('./public/html/login.html', function(err, data) {
+              if(err) {
+                throw err;
+              } else {
+                response.writeHead(200,
+                  {'Content-Type': 'text/html'}
+                );
+                response.write(data);
+                response.end();
+              }
+            });
+          }
 
       } else {
         // Could also have an error.js that deals with various errors
