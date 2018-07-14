@@ -2,9 +2,9 @@
 
 /* NPM modules */
 var http = require('http');
-var fs = require('fs');
 
 /* Additional server-side JavaScript modules */
+//var dispatcher = require('./public/javascript/dispatcher.js');
 var dispatcher = require('./public/javascript/dispatcher.js');
 
 /*
@@ -19,23 +19,36 @@ var database = require('./public/javascript/DBManager').init();
 var serverPort = 8124;
 http.createServer(function (request, response) {
 
-  /* Starting the server with the default page */
-  fs.readFile('public/html/signIn.html', function(err, data) {
-    if(err) {
-      response.writeHead(404, {'Content-Type': 'text/html'});
-      response.writeHead("404 Not Found\n");
-      response.end();
-    }
-    else if(data) {
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.write(data);
-      response.end();
-    }
-  });
+  // authorization was found on StackOverflow
+  var auth = request.headers['authorization'];
+  if(!auth) {
+    response.statusCode = 401;
+    response.setHeader('WWW-Authenticate', 'Basic realm="Authorized User"');
+    response.end('<html><body>Authorization needed.</body></html>');
 
-  /* Passing HTTP requests and responses to our helper modules */
-  dispatcher.deal(request, response);
+  } else if(auth) {
 
+    var tmp = auth.split(' '); // auth format is: "Basic bmF0YW46TIz"
+    var buf = new Buffer(tmp[1], 'base64');
+    var plain_auth = buf.toString();
+
+    console.log("Decoded authorization: "+plain_auth);
+
+    var creds = plain_auth.split(':');
+    var username = creds[0],
+        password = creds[1];
+
+    if(username == 'admin' && password == 'pass') {
+      //response.statusCode = 200;
+      dispatcher.serve(request, response); // This is the important part
+
+    } else {
+      response.statusCode = 401;
+      response.setHeader('WWW-Authenticate', 'Basic realm="Authorized User"');
+      response.end('<html><body>Wrong credentials.</body></html>');
+
+    }
+  }
 }).listen(serverPort);
 
 console.log('Server running at localhost: '+serverPort);
