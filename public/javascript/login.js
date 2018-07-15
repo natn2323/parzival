@@ -8,6 +8,17 @@ module.exports = {
   }
 }
 
+function newuser() {
+    console.log("NEW USER");
+    response.writeHead(301,
+        {Location: 'http://localhost:8124/newuser'}
+      );
+      /* From documentation, after a "finish" event, no more events will be
+        emitted on the response object */
+      response.end();
+
+  }
+
 function GETHandler(request, response) {
   var fs = require('fs');
     fs.readFile('./public/html/login.html', function(err, data) {
@@ -19,6 +30,7 @@ function GETHandler(request, response) {
       response.end();
     }
   });
+
 } // end function
 
 function POSTHandler(request, response, data) {
