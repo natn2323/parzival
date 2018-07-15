@@ -30,27 +30,25 @@ module.exports = {
           {Location: 'http://localhost:8124/login'}
         );
         response.end();
+      } else if(request.url === "/login") {
+        var login_handler = require("./login.js");
+        login_handler.handle(request, response, passed_data);
 
-      } else if(fs.existsSync(filepath)) {
-          var referer = request.headers['referer'];
-          if(referer) {
-            /* This is blocking, synchronous code.
-               Associating URL with JavaScript file. */
-            var serving = require(filepath);
-            serving.handle(request, response, passed_data);
-          } else {
-            fs.readFile('./public/html/login.html', function(err, data) {
-              if(err) {
-                throw err;
-              } else {
-                response.writeHead(200,
-                  {'Content-Type': 'text/html'}
-                );
-                response.write(data);
-                response.end();
-              }
-            });
-          }
+      } else if(request.url === "/menu") {
+        var menu_handler = require("./menu.js");
+        menu_handler.handle(request, response, passed_data);
+
+      } else if(request.url === "/reviewOrder") {
+        var review_handler = require("./reviewOrder.js");
+        review_handler.handle(request, response, passed_data);
+
+      } else if(request.url === "/checkout") {
+        var checkout_handler = require("./checkout.js");
+        checkout_Handler.handle(request, response, passed_data);
+
+      } else if(request.url === "/confirmation") {
+        var confirmation_handler = require("./confirmation.js");
+        confirmation_handler.handle(request, response, passed_data);
 
       } else {
         // Could also have an error.js that deals with various errors
@@ -60,3 +58,18 @@ module.exports = {
     }) // on end
   } // end serve
 } // end of file
+
+function parseCookies (request) {
+    var list = {},
+        rc = request.headers.cookie;
+
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+    for(var key in Object.keys(list)) {
+      console.log(key+": "+list[key]);
+    }
+
+    return list;
+}

@@ -32,7 +32,7 @@ http.createServer(function (request, response) {
     var buf = new Buffer(tmp[1], 'base64');
     var plain_auth = buf.toString();
 
-    console.log("Decoded authorization: "+plain_auth);
+    // console.log("Decoded authorization: "+plain_auth);
 
     var creds = plain_auth.split(':');
     var username = creds[0],
