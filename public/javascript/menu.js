@@ -26,7 +26,7 @@ function GETHandler(request, response) {
 function POSTHandler(request, response, data) {
   console.log("Menu posthandler entered. Contains: ");
   for(var a in data) {
-    console.log(data,);
+    console.log(data);
   }
 
 } // end function
