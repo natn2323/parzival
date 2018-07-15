@@ -2,11 +2,11 @@
 <html>
 
 <head>
-	<title>Login Page</title>
+	<title>New User Registration/title>
 </head>
 
 <body>
-	<form action="/login" method="POST" class="login">
+	<form action="/newuser" method="POST" class="newuser">
 		<div id="username">
 			<label for="username">Enter your username: </label>
 			<input type="text" name="username" id="username" required>
@@ -15,14 +15,8 @@
 			<label for="password">Enter your password: </label>
 			<input type="text" name="password" id="password" required>
 		</div>
-		<div id="login-submit">
-			<input type="submit" value="Login">
-		</div>
-		
-	</form>
-	<form>
-		<div id="register-submit">
-			<input type="button" value="NewUser" onclick="return newuser();">
+		<div id="newuser-submit">
+			<input type="submit" value="Register">
 		</div>
 	</form>
 </body>
