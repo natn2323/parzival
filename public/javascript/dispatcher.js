@@ -4,7 +4,6 @@
 	 other modules */
 module.exports = {
   serve: function(request, response) {
-    var qs = require('querystring');
     var requestBody = '';
 
     request.on('data', function(data) {
@@ -12,16 +11,22 @@ module.exports = {
     }); // on data
 
     request.on('end', function() {
-      var qs = require('querystring');
-      var passed_data = qs.parse(requestBody);
+      var passed_data;
 
+      /* Parse data based on content-type */
+      if(request.headers['content-type'] === 'application/json') {
+        passed_data = JSON.parse(requestBody);
+      } else {
+        var qs = require('querystring');
+        passed_data = qs.parse(requestBody);
+      }
+
+      /* Trying to do some smart URL assignments */
       var path = require('path');
       var parsed_path = path.parse(request.url);
       var filename = parsed_path['name']+'.js';
       var filepath = path.join(__dirname, filename);
 
-      var fs = require('fs');
-      //console.log("Referer is undefined?: "+request.headers['referer']);
       /* Preventing direct access to /menu, etc. without first starting at
          login screen by checking the 'referer', i.e. the previous page.
          Might be an issue later when we have more pages linked together. */
@@ -30,27 +35,29 @@ module.exports = {
           {Location: 'http://localhost:8124/login'}
         );
         response.end();
+      } else if(request.url === "/login") {
+        var login_handler = require("./login.js");
+        login_handler.handle(request, response, passed_data);
 
-      } else if(fs.existsSync(filepath)) {
-          var referer = request.headers['referer'];
-          if(referer) {
-            /* This is blocking, synchronous code.
-               Associating URL with JavaScript file. */
-            var serving = require(filepath);
-            serving.handle(request, response, passed_data);
-          } else {
-            fs.readFile('./public/html/login.html', function(err, data) {
-              if(err) {
-                throw err;
-              } else {
-                response.writeHead(200,
-                  {'Content-Type': 'text/html'}
-                );
-                response.write(data);
-                response.end();
-              }
-            });
-          }
+      } else if(request.url === "/newUser") {
+        var new_user_handler = require("./newUser.js");
+        new_user_handler.handle(request, response, passed_data);
+
+      } else if(request.url === "/menu") {
+        var menu_handler = require("./menu.js");
+        menu_handler.handle(request, response, passed_data);
+
+      // } else if(request.url === "/reviewOrder") {
+      //   var review_handler = require("./reviewOrder.js");
+      //   review_handler.handle(request, response, passed_data);
+      //
+      // } else if(request.url === "/checkout") {
+      //   var checkout_handler = require("./checkout.js");
+      //   checkout_Handler.handle(request, response, passed_data);
+      //
+      // } else if(request.url === "/confirmation") {
+      //   var confirmation_handler = require("./confirmation.js");
+      //   confirmation_handler.handle(request, response, passed_data);
 
       } else {
         // Could also have an error.js that deals with various errors
