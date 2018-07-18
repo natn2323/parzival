@@ -3,6 +3,8 @@
 
 <head>
 	<title>Login Page</title>
+	<!-- Create a script to get hostname instead of hardcoding localhost -->
+	<!-- You can use window.location.hostname -->
 </head>
 
 <body>
@@ -18,12 +20,10 @@
 		<div id="login-submit">
 			<input type="submit" value="Login">
 		</div>
-		
 	</form>
-	<form>
-		<div id="register-submit">
-			<input type="button" value="NewUser" onclick="return newuser();">
-		</div>
+
+	<form class="register">
+		<input type="button" value="Register" onclick="window.location.href='http://www.localhost:8124/newUser'">
 	</form>
 </body>
 

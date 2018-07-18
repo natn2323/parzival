@@ -3,26 +3,82 @@
 
 <head>
 	<title>Sign-In Page</title>
+	<script>
+		function submitClick() {
+			var xhttp = new XMLHttpRequest(),
+				  method = "POST",
+					url = "http://localhost:8124/menu",
+					dataElements = document.getElementById('menuForm'),
+					labels = document.getElementsByTagName('label'),
+					itemName = '',
+					key = '',
+					quantity = 0,
+					dataToSubmit = {'content':[]};
+
+			for (let i = 0; i < labels.length; i++) {
+				if (labels[i].htmlFor !== '') {
+					itemName = labels[i].textContent;
+					key = labels[i].htmlFor;
+					quantity = dataElements.elements[key].value;
+					dataToSubmit['content'].push({
+						'item': itemName,
+						'quantity': quantity,
+						'price': '$21.23' // insert price here
+					});
+				}
+			} // end for
+
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200)
+					console.log("I am done!");
+			}; // end onready
+
+			xhttp.open(method, url, true);
+			xhttp.setRequestHeader('Content-Type', 'application/json');
+			xhttp.send(JSON.stringify(dataToSubmit));
+		}
+	</script>
 </head>
 
 <body>
-	<form action="/menu" method="POST" class="menu">
+	<!--div id="menu-wrapper">
+		<div class="item">
+			<input id="item1_quantity">
+			<span id="item1_name">Bbq Drumsticks</span>
+			<span id="item1_price">($6.25)</span>
+		</div>
+		<div class="item">
+			<input id="item2_quantity">
+			<span id="item2_name">French Fries</span>
+			<span id="item2_price">($6.25)</span>
+		</div>
+		<div class="item">
+			<input id="item3_quantity">
+			<span id="item3_name">Chick-un Nuggets</span>
+			<span id="item3_price">($5.95)</span>
+		</div>
+		<button id="order-button">Order</button>
+	</div-->
+
+	<form id="menuForm">
 		<div>
-			<label for="item1">Bbq Drumsticks ($6.25)</label>
-			<input type="checkbox" name="Bbq Drumsticks $6.25">
+			<input type="number" name="item1_quantity">
+			<label for="item1_quantity">Bbq Drumsticks</label>
 		</div>
 		<div>
-			<label for="item2">French Fries ($4.25)</label>
-			<input type="checkbox" name="French Fries $4.25">
+			<input type="number" name="item2_quantity">
+			<label for="item2_quantity">French Fries</label>
 		</div>
 		<div>
-			<label for="item3">Chick-un Nuggets ($5.95)</label>
-			<input type="checkbox" name="Chick-un Nuggets $5.95">
+			<input type="number" name="item3_quantity">
+			<label for="item3_quantity">Chick-un Nuggets</label>
 		</div>
 		<div id="order-submit">
-			<input type="submit" value="Order">
+			<!--input type="submit" value="Order"-->
+			<button type="button" onclick="submitClick()">Order</button>
 		</div>
 	</form>
+
 </body>
 
 
