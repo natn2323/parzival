@@ -10,7 +10,7 @@ module.exports = {
 
 function GETHandler(request, response) {
   var fs = require('fs');
-    fs.readFile('./public/html/newuser.html', function(err, data) {
+    fs.readFile('./public/html/newUser.html', function(err, data) {
     if(err) {
       throw err;
     } else {
@@ -19,10 +19,13 @@ function GETHandler(request, response) {
       response.end();
     }
   });
+
 } // end function
 
 function POSTHandler(request, response, data) {
-  var db_man = require("./DBManager.js");
-  console.log(data);
-  
+  console.log("newUser POST entered! Returning to login...");
+  response.writeHead(301,
+    {Location: 'http://localhost:8124/login'}
+  );
+  response.end();
 } // end function

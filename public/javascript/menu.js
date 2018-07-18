@@ -25,8 +25,8 @@ function GETHandler(request, response) {
 
 function POSTHandler(request, response, data) {
   console.log("Menu posthandler entered");
-  var db_man = require("./DBManager.js");
-  var orderPromise = db_man.processOrder(data);
+  var db = require("./DBManager.js").getPool();
+  var orderPromise = processOrder(data);
 
   orderPromise.then(function(ordered) {
     if(ordered) {
@@ -50,3 +50,56 @@ function POSTHandler(request, response, data) {
 
   }); // end orderPromise
 } // end function
+
+
+/*************************** PRIVATE FUNCTIONS ***************************/
+
+function processOrder(data) {
+  return new Promise(function(resolve, reject) {
+    var db = require('./DBManager.js').getPool();
+
+    for(let i = 0; i < data['content'].length; i++) {
+      let unit = data['content'][i];
+
+      db.run("INSERT INTO orderedItems "
+        + "(itemName, quantity, unitPrice, username) VALUES"
+        + "($itemName, $quantity, $unitPrice, $username)",
+        {
+          $itemName: unit.item,
+          $quantity: unit.quantity,
+          $unitPrice: unit.price,
+          $username: 'temporaryUser'
+        },
+        function(err) {
+          if(!err) {
+            // Could do some counting--if only I could get it to work
+          } else {
+            reject(err);
+          }
+        }
+      ); // end run
+
+    } // end for
+    resolve(true);
+
+    // db.all("SELECT * FROM orderedItems WHERE username='temporaryUser'",
+    //   function(err, rows) {
+    //     if(err) {
+    //       console.log("Error is: "+err);
+    //     } else if (rows.length > 0) {
+    //         rows.forEach(function(row) {
+    //           Object.keys(row).forEach(function(key, index) {
+    //             console.log(index+"--"+key+": "+row[key]);
+    //           });
+    //         });
+    //     };
+    //   }
+    // );
+
+    // db.each("SELECT COUNT(username) FROM orderedItems", function(err, rows) {
+    //   Object.keys(rows).forEach(function(key, index) {
+    //     console.log("\nCount is: "+rows[key]+"\n");
+    //   })
+    // });
+  });
+} // end processOrder
