@@ -8,20 +8,9 @@ module.exports = {
   }
 }
 
-function newuser() {
-    console.log("NEW USER");
-    response.writeHead(301,
-        {Location: 'http://localhost:8124/newuser'}
-      );
-      /* From documentation, after a "finish" event, no more events will be
-        emitted on the response object */
-      response.end();
-
-  }
-
 function GETHandler(request, response) {
   var fs = require('fs');
-    fs.readFile('./public/html/login.html', function(err, data) {
+  fs.readFile('./public/html/login.html', function(err, data) {
     if(err) {
       throw err;
     } else {
@@ -35,7 +24,7 @@ function GETHandler(request, response) {
 
 function POSTHandler(request, response, data) {
   var db_man = require("./DBManager.js");
-  var validationPromise = db_man.validate(data);
+  var validationPromise = db_man.validateLogin(data);
   validationPromise.then(function(validated) {
     if(validated) {
       console.log("Validated!");
@@ -57,6 +46,6 @@ function POSTHandler(request, response, data) {
     }
   }, function(err) {
     console.log("Error on validationPromise: "+err);
-    
+
   }); // end validationPromise
 } // end function
