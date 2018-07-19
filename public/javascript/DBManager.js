@@ -37,11 +37,17 @@ module.exports = {
         + " ('123', 'admin', 'pass')")
         .run("INSERT INTO loginInfo (userId, username, password) VALUES"
         + " ('123', 'admin2', 'pass2')");
+
+      db.run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
+        + " ('Chunky Soup', '10', 'temporaryUser')")
+        .run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
+          + " ('Soft Sandwich', '2', 'temporaryUser')")
     });
     return pool;
 
   }, // end getPool
   getCurrentUsernameAndPassword: function() {
+    let current_username = 'temporaryUser'; // TODO: This is temporary!
     return [current_username, current_password];
   }
 } // end exports
