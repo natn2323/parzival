@@ -11,7 +11,7 @@ var dispatcher = require('./public/javascript/dispatcher.js');
   Creating database or dataframe or whatever. Currently using sqlite3 and
   initializing database in memory
 */
-var database = require('./public/javascript/DBManager').init();
+require('./public/javascript/DBManager').getPool();
 
 /*
   Starting backend HTTP server

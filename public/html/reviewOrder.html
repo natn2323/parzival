@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Review Order Page</title>
+	<style>
+		body {
+    	background: white;
+		}
+		.header {
+	    background-color: #f1f1f1;
+			max-width: 100%;
+	    padding: 30px;
+	    text-align: center;
+	    font-size: 35px;
+			border-bottom: 1px solid black;
+		}
+		.centerContent{
+	    background:white;
+	    width: 70%;
+	    float:left;
+			outline-style: solid;
+			outline-color: black;
+			outline-width: thin;
+		}
+		.leftContent{
+	    background: lightblue;
+	    width: 15%;
+	    float:left;
+		}
+		.rightContent{
+	    background: lightblue;
+	    width: 15%;
+			float:right;
+		}
+		.centerContent, .leftContent, .rightContent{
+	    height: 100vh;
+		}
+	</style>
+
+	<script>
+		// Method #1
+		document.addEventListener('DOMContentLoaded', function() {
+			var xhttp = new XMLHttpRequest(),
+					method = "GET",
+					url = "http://localhost:8124/reviewOrder/getItemOrder",
+					area = document.getElementById('reviewOrder');
+
+			// Do GET request here and parse data
+			xhttp.open(method, url, true);
+			xhttp.send();
+
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200) {
+					console.log("Entered!");
+					// Now you've got the data
+					let response = JSON.parse(xhttp.responseText),
+							content = response['content'],
+							frag = document.createDocumentFragment();
+
+					// Now we're replacing placeholders in template
+					for (let i = 0; i < content.length; i++) {
+						let itemName = content[i].item,
+								quantity = content[i].quantity;
+
+						// Create div
+						let div = document.createElement("div");
+						div.id = `item_${i}`;
+
+						// Create input
+						let input = document.createElement("input");
+						input.type = "number";
+						input.name = `${itemName}`;
+						input.value = `${quantity}`;
+
+						// Create label
+						let label = document.createElement("label");
+						label.for = `${itemName}`;
+						label.innerText = `${itemName}`;
+
+						// Appending
+						div.appendChild(input);
+						div.appendChild(label);
+						frag.appendChild(div);
+
+					} // end for
+
+					// Create wrapper for submit button
+					let submit_div = document.createElement("div");
+					submit_div.id = "review-order-submit";
+
+					// Create submit button
+					let button = document.createElement("input");
+					button.type = "submit";
+					button.value = "Proceed to checkout";
+
+					// Appending
+					submit_div.appendChild(button);
+					frag.appendChild(submit_div);
+
+					// Append fragment to the form
+					area.appendChild(frag);
+
+				} // end if
+			} // end onreadystatechange
+		}); // end eventlistener
+	</script>
+</head>
+
+
+<body>
+	<div class="leftContent">&nbsp;</div>
+
+	<div class="centerContent">
+		<div class="header">
+			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+		</div>
+
+		<form action="/checkout" method="POST" id="reviewOrder">
+			<!-- Appending entries here! -->
+		</form>
+
+	</div>
+
+	<div class="rightContent">
+		&nbsp;
+	</div>
+</body>
+
+
+</html>
