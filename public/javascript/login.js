@@ -8,6 +8,11 @@ module.exports = {
   }
 }
 
+
+/*************************************************************************
+ *************************** PRIVATE FUNCTIONS ***************************
+ *************************************************************************/
+
 function GETHandler(request, response) {
   var fs = require('fs');
   fs.readFile('./public/html/login.html', function(err, data) {
@@ -20,12 +25,10 @@ function GETHandler(request, response) {
     }
   });
 
-} // end function
+} // end GETHandler
 
 function POSTHandler(request, response, data) {
-  // var db_man = require("./DBManager.js");
-  // var validationPromise = db_man.validateLogin(data);
-  var validationPromise = valiateLogin(data);
+  var validationPromise = validateLogin(data);
   validationPromise.then(function(validated) {
     if(validated) {
       console.log("Validated!");
@@ -49,10 +52,12 @@ function POSTHandler(request, response, data) {
     console.log("Error on validationPromise: "+err);
 
   }); // end validationPromise
-} // end function
+} // end POSTHandler
 
 
-/*************************** PRIVATE FUNCTIONS ***************************/
+/************************************************************************
+ *************************** HELPER FUNCTIONS ***************************
+ ************************************************************************/
 
 /* Quick validation of given info, then checking against database.
    Some validattion COULD be done from the browser as well, as to avoid
@@ -93,8 +98,6 @@ function validateLoginWithDatabase(givenUsername, givenPassword) {
           console.log("Accessed!");
           console.log(rows[0]['username']);
           console.log(rows[0]['password']);
-          current_username = rows[0]['username'];
-          current_password = rows[0]['password'];
           resolve(true);
 
         } else if(rows.length === 0) { // Dealing with empty result sets
