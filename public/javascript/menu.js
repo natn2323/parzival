@@ -8,6 +8,11 @@ module.exports = {
   }
 }
 
+
+/*************************************************************************
+ *************************** PRIVATE FUNCTIONS ***************************
+ *************************************************************************/
+
 function GETHandler(request, response) {
   console.log("Menu gethandler entered");
   var fs = require('fs');
@@ -21,38 +26,37 @@ function GETHandler(request, response) {
     }
   });
 
-} // end function
+} // end GETHandler
 
 function POSTHandler(request, response, data) {
   console.log("Menu posthandler entered");
   var db = require("./DBManager.js").getPool();
-  var orderPromise = processOrder(data);
 
+  var orderPromise = processOrder(data);
   orderPromise.then(function(ordered) {
     if(ordered) {
-      // console.log("Menu items ordered!");
-      // response.writeHead(301,
-      //   {Location: 'http://localhost:8124/reviewOrder'}
-      // );
-      // response.end();
-      response.writeHead(200);
+      console.log("Menu items ordered!");
+      response.writeHead(301,
+        {Location: 'http://localhost:8124/reviewOrder'}
+      );
       response.end();
-    } else {
-      // response.writeHead(200, {'Content-Type': 'text/html'});
-      // response.write('<html><body>Something went wrong while ordering!</body></html>')
-      // response.end();
-      response.writeHead(501);
-      response.end();
-    }
 
+    } else {
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.write('<html><body>Something went wrong while ordering!</body></html>')
+      response.end();
+
+    }
   }, function(err) {
     console.log("Error on orderPromise: "+err);
 
   }); // end orderPromise
-} // end function
+} // end POSTHandler
 
 
-/*************************** PRIVATE FUNCTIONS ***************************/
+/************************************************************************
+ *************************** HELPER FUNCTIONS ***************************
+ ************************************************************************/
 
 function processOrder(data) {
   return new Promise(function(resolve, reject) {
@@ -82,24 +86,5 @@ function processOrder(data) {
     } // end for
     resolve(true);
 
-    // db.all("SELECT * FROM orderedItems WHERE username='temporaryUser'",
-    //   function(err, rows) {
-    //     if(err) {
-    //       console.log("Error is: "+err);
-    //     } else if (rows.length > 0) {
-    //         rows.forEach(function(row) {
-    //           Object.keys(row).forEach(function(key, index) {
-    //             console.log(index+"--"+key+": "+row[key]);
-    //           });
-    //         });
-    //     };
-    //   }
-    // );
-
-    // db.each("SELECT COUNT(username) FROM orderedItems", function(err, rows) {
-    //   Object.keys(rows).forEach(function(key, index) {
-    //     console.log("\nCount is: "+rows[key]+"\n");
-    //   })
-    // });
-  });
+  }); // end return
 } // end processOrder
