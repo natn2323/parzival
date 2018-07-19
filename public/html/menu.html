@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Sign-In Page</title>
+	<title>Menu Page</title>
 	<script>
 		function submitClick() {
 			var xhttp = new XMLHttpRequest(),
@@ -28,38 +28,22 @@
 				}
 			} // end for
 
-			xhttp.onreadystatechange = function() {
-				if(xhttp.readyState === 4 && xhttp.status === 200)
-					console.log("I am done!");
-			}; // end onready
-
 			xhttp.open(method, url, true);
 			xhttp.setRequestHeader('Content-Type', 'application/json');
 			xhttp.send(JSON.stringify(dataToSubmit));
-		}
+
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200) {
+					window.location.href = 'http://localhost:8124/reviewOrder';
+				} // end if
+			}; // end onready
+
+		} // end submitClick
 	</script>
 </head>
 
-<body>
-	<!--div id="menu-wrapper">
-		<div class="item">
-			<input id="item1_quantity">
-			<span id="item1_name">Bbq Drumsticks</span>
-			<span id="item1_price">($6.25)</span>
-		</div>
-		<div class="item">
-			<input id="item2_quantity">
-			<span id="item2_name">French Fries</span>
-			<span id="item2_price">($6.25)</span>
-		</div>
-		<div class="item">
-			<input id="item3_quantity">
-			<span id="item3_name">Chick-un Nuggets</span>
-			<span id="item3_price">($5.95)</span>
-		</div>
-		<button id="order-button">Order</button>
-	</div-->
 
+<body>
 	<form id="menuForm">
 		<div>
 			<input type="number" name="item1_quantity">
@@ -74,11 +58,9 @@
 			<label for="item3_quantity">Chick-un Nuggets</label>
 		</div>
 		<div id="order-submit">
-			<!--input type="submit" value="Order"-->
 			<button type="button" onclick="submitClick()">Order</button>
 		</div>
 	</form>
-
 </body>
 
 
