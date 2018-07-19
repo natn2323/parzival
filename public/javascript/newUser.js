@@ -8,6 +8,10 @@ module.exports = {
   }
 }
 
+/*************************************************************************
+ *************************** PRIVATE FUNCTIONS ***************************
+ *************************************************************************/
+
 function GETHandler(request, response) {
   var fs = require('fs');
     fs.readFile('./public/html/newUser.html', function(err, data) {
@@ -28,4 +32,5 @@ function POSTHandler(request, response, data) {
     {Location: 'http://localhost:8124/login'}
   );
   response.end();
+
 } // end function
