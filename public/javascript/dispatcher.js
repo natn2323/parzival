@@ -47,14 +47,14 @@ module.exports = {
         var menu_handler = require("./menu.js");
         menu_handler.handle(request, response, passed_data);
 
-      // } else if(request.url === "/reviewOrder") {
-      //   var review_handler = require("./reviewOrder.js");
-      //   review_handler.handle(request, response, passed_data);
-      //
-      // } else if(request.url === "/checkout") {
-      //   var checkout_handler = require("./checkout.js");
-      //   checkout_Handler.handle(request, response, passed_data);
-      //
+      } else if(request.url === "/reviewOrder" || request.url === "/reviewOrder/getItemOrder") {
+        var review_handler = require("./reviewOrder.js");
+        review_handler.handle(request, response, passed_data);
+
+      } else if(request.url === "/checkout") {
+        var checkout_handler = require("./checkout.js");
+        checkout_handler.handle(request, response, passed_data);
+
       // } else if(request.url === "/confirmation") {
       //   var confirmation_handler = require("./confirmation.js");
       //   confirmation_handler.handle(request, response, passed_data);
