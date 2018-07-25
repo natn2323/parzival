@@ -15,6 +15,7 @@ module.exports = {
     if(pool) return pool; // Singleton
     pool = db.serialize(function() {
       db.run('CREATE TABLE loginInfo ('
+              + 'authenticationToken varchcar(255),'
               + 'userId varchar(255),'
               + 'username varchar(255),'
               + 'password varchar(255)'
