@@ -3,29 +3,76 @@
 
 <head>
 	<title>Login Page</title>
+	<style>
+		body {
+			background: white;
+		}
+		.header {
+			background-color: #f1f1f1;
+			max-width: 100%;
+			padding: 30px;
+			text-align: center;
+			font-size: 35px;
+			border-bottom: 1px solid black;
+		}
+		.centerContent{
+			background:white;
+			width: 70%;
+			float:left;
+			outline-style: solid;
+			outline-color: black;
+			outline-width: thin;
+		}
+		.leftContent{
+			background: lightblue;
+			width: 15%;
+			float:left;
+		}
+		.rightContent{
+			background: lightblue;
+			width: 15%;
+			float:right;
+		}
+		.centerContent, .leftContent, .rightContent{
+			height: 100vh;
+		}
+	</style>
 	<!-- Create a script to get hostname instead of hardcoding localhost -->
 	<!-- You can use window.location.hostname -->
 </head>
 
 
 <body>
-	<form action="/login" method="POST" class="login">
-		<div id="username">
-			<label for="username">Enter your username: </label>
-			<input type="text" name="username" id="username" required>
-		</div>
-		<div id="password">
-			<label for="password">Enter your password: </label>
-			<input type="text" name="password" id="password" required>
-		</div>
-		<div id="login-submit">
-			<input type="submit" value="Login">
-		</div>
-	</form>
+	<div class="leftContent">&nbsp;</div>
 
-	<form class="register">
-		<input type="button" value="Register" onclick="window.location.href='http://www.localhost:8124/newUser'">
-	</form>
+	<div class="centerContent">
+		<div class="header">
+			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+		</div>
+
+		<form action="/login" method="POST" class="login">
+			<div id="username">
+				<label for="username">Enter your username: </label>
+				<input type="text" name="username" id="username" required>
+			</div>
+			<div id="password">
+				<label for="password">Enter your password: </label>
+				<input type="text" name="password" id="password" required>
+			</div>
+			<div id="login-submit">
+				<input type="submit" value="Login">
+			</div>
+		</form>
+
+		<form class="register">
+			<input type="button" value="Register" onclick="window.location.href='http://www.localhost:8124/newUser'">
+		</form>
+
+	</div>
+
+	<div class="rightContent">
+		&nbsp;
+	</div>
 </body>
 
 
