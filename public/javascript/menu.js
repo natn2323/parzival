@@ -30,8 +30,25 @@ function GETHandler(request, response) {
 
 function POSTHandler(request, response, data) {
   console.log("Menu posthandler entered");
-  var db = require("./DBManager.js").getPool();
 
+  // An array representing the URL
+  var url_split_arr = require('url')
+    .parse(request.url, true)
+    .pathname
+    .split('/');
+  var url_split_arr_length = url_split_arr.length;
+  var url_split_path = url_split_arr.slice(1, url_split_arr_length);
+  var base = url_split_path[0];
+
+  processOrderHandler(request, response, data);
+} // end POSTHandler
+
+
+/************************************************************************
+ *************************** HELPER FUNCTIONS ***************************
+ ************************************************************************/
+
+function processOrderHandler(request, response, data) {
   var orderPromise = processOrder(data);
   orderPromise.then(function(ordered) {
     if(ordered) {
@@ -51,12 +68,7 @@ function POSTHandler(request, response, data) {
     console.log("Error on orderPromise: "+err);
 
   }); // end orderPromise
-} // end POSTHandler
-
-
-/************************************************************************
- *************************** HELPER FUNCTIONS ***************************
- ************************************************************************/
+} // end processOrderHandler
 
 function processOrder(data) {
   return new Promise(function(resolve, reject) {
