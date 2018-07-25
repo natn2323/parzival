@@ -15,41 +15,47 @@ module.exports = {
 
 function GETHandler(request, response) {
   if(request.url === "/reviewOrder") {
-    var fs = require('fs');
-    fs.readFile('./public/html/reviewOrder.html', function(err, data) {
-      if(err) {
-        throw err;
-      } else {
-        response.writeHead(200, {'Content-Type': 'text/html'});
-        response.write(data);
-        response.end();
-      }
+
+    // Handling the inline GET request
+    if(request.headers['x-requested-with'] &&
+        request.headers['x-requested-with'] === 'XMLHttpRequest') {
+
+      // GET-ing the page involves orders based on menu page selections
+      var username = require('./DBManager.js').getCurrentUsernameAndPassword()[0];
+
+      var reviewPromise = getItemOrder(username); // username is being hardcoded
+      reviewPromise.then(function(rows) {
+        // Parsing data
+        let dataToSubmit = {'content': []}
+        for(let i = 0; i < rows.length; i++) {
+          let unit = rows[i];
+          dataToSubmit['content'].push({
+            'item': unit.itemName,
+            'quantity': unit.quantity
+          });
+        } // end for
+
+        response.writeHead('200', {'Content-Type': 'application/json'});
+        response.end(JSON.stringify(dataToSubmit));
+
+      }, function(err) {
+        console.log("Error on reviewPromise: "+err);
     });
 
-  } else if(request.url === "/reviewOrder/getItemOrder") {
-    // GET-ing the page involves orders based on menu page selections
-    var username = require('./DBManager.js').getCurrentUsernameAndPassword()[0];
+    } else {
+      var fs = require('fs');
+      fs.readFile('./public/html/reviewOrder.html', function(err, data) {
+        if(err) {
+          throw err;
+        } else {
+          response.writeHead(200, {'Content-Type': 'text/html'});
+          response.write(data);
+          response.end();
+        }
+      });
 
-    var reviewPromise = getItemOrder(username); // username is being hardcoded
-    reviewPromise.then(function(rows) {
-      // Parsing data
-      let dataToSubmit = {'content': []}
-      for(let i = 0; i < rows.length; i++) {
-        let unit = rows[i];
-        dataToSubmit['content'].push({
-          'item': unit.itemName,
-          'quantity': unit.quantity
-        });
-      } // end for
-
-      response.writeHead('200', {'Content-Type': 'application/json'});
-      response.end(JSON.stringify(dataToSubmit));
-
-    }, function(err) {
-      console.log("Error on reviewPromise: "+err);
-    });
-
-  }
+    } // end else
+  } // end outer if
 } // end GETHandler
 
 function POSTHandler(request, response, data) {
