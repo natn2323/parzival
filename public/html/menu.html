@@ -3,6 +3,41 @@
 
 <head>
 	<title>Menu Page</title>
+	<style>
+		body {
+			background: white;
+		}
+		.header {
+			background-color: #f1f1f1;
+			max-width: 100%;
+			padding: 30px;
+			text-align: center;
+			font-size: 35px;
+			border-bottom: 1px solid black;
+		}
+		.centerContent{
+			background:white;
+			width: 70%;
+			float:left;
+			outline-style: solid;
+			outline-color: black;
+			outline-width: thin;
+		}
+		.leftContent{
+			background: lightblue;
+			width: 15%;
+			float:left;
+		}
+		.rightContent{
+			background: lightblue;
+			width: 15%;
+			float:right;
+		}
+		.centerContent, .leftContent, .rightContent{
+			height: 100vh;
+		}
+	</style>
+
 	<script>
 		function submitClick() {
 			var xhttp = new XMLHttpRequest(),
@@ -30,11 +65,19 @@
 
 			xhttp.open(method, url, true);
 			xhttp.setRequestHeader('Content-Type', 'application/json');
+			xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 			xhttp.send(JSON.stringify(dataToSubmit));
 
 			xhttp.onreadystatechange = function() {
 				if(xhttp.readyState === 4 && xhttp.status === 200) {
-					window.location.href = 'http://localhost:8124/reviewOrder';
+					// Contains the redirection URL
+					if(xhttp.responseURL) {
+						// window.location.href does a GET request
+						window.location.href = xhttp.responseURL;
+					} else {
+						console.log("Nowhere to redirect to!");
+					}
+
 				} // end if
 			}; // end onready
 
@@ -46,15 +89,15 @@
 <body>
 	<form id="menuForm">
 		<div>
-			<input type="number" name="item1_quantity">
+			<input type="number" name="item1_quantity" min="0" oninput="validity.valid||(value='');">
 			<label for="item1_quantity">Bbq Drumsticks</label>
 		</div>
 		<div>
-			<input type="number" name="item2_quantity">
+			<input type="number" name="item2_quantity" min="0" oninput="validity.valid||(value='');">
 			<label for="item2_quantity">French Fries</label>
 		</div>
 		<div>
-			<input type="number" name="item3_quantity">
+			<input type="number" name="item3_quantity" min="0" oninput="validity.valid||(value='');">
 			<label for="item3_quantity">Chick-un Nuggets</label>
 		</div>
 		<div id="order-submit">
