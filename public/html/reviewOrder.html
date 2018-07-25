@@ -43,11 +43,12 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			var xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/reviewOrder/getItemOrder",
+					url = "http://localhost:8124/reviewOrder",
 					area = document.getElementById('reviewOrder');
 
 			// Do GET request here and parse data
 			xhttp.open(method, url, true);
+			xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 			xhttp.send();
 
 			xhttp.onreadystatechange = function() {
@@ -70,6 +71,7 @@
 						// Create input
 						let input = document.createElement("input");
 						input.type = "number";
+						input.min = 0;
 						input.name = `${itemName}`;
 						input.value = `${quantity}`;
 
@@ -78,9 +80,19 @@
 						label.for = `${itemName}`;
 						label.innerText = `${itemName}`;
 
+						// Create "delete" button
+						let delete_button = document.createElement("button");
+						// delete_button.style = "background: url(delete_button.png)";
+						delete_button.onclick = function() {
+							let selector = document.getElementById("reviewOrder");
+							let currDiv = document.getElementById(`item_${i}`);
+							selector.removeChild(currDiv);
+						}
+
 						// Appending
 						div.appendChild(input);
 						div.appendChild(label);
+						div.appendChild(delete_button);
 						frag.appendChild(div);
 
 					} // end for
