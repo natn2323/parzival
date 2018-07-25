@@ -21,47 +21,48 @@ module.exports = {
         passed_data = qs.parse(requestBody);
       }
 
-      /* Trying to do some smart URL assignments */
-      var path = require('path');
-      var parsed_path = path.parse(request.url);
-      var filename = parsed_path['name']+'.js';
-      var filepath = path.join(__dirname, filename);
+      // /* Trying to do some smart URL assignments */
+      // var path = require('path');
+      // var parsed_path = path.parse(request.url);
+      // var filename = parsed_path['name']+'.js';
+      // var filepath = path.join(__dirname, filename);
+
+      // An array representing the URL
+      var url_split_path = require('url')
+        .parse(request.url, true)
+        .pathname
+        .split('/')
+        .slice(1, this.length);
+      console.log("Original url is: "+url_split_path);
+
+      // // A dictionary-representation of the query string
+      // var url_query = require('url')
+      //   .parse(request.url, true)
+      //   .query; // this is more important in URL handlers
 
       /* Preventing direct access to /menu, etc. without first starting at
          login screen by checking the 'referer', i.e. the previous page.
          Might be an issue later when we have more pages linked together. */
-      if(request.url === "/") {
+      let base = url_split_path[0],
+          file = "./" + base + ".js",
+          filepath = require('path').join(__dirname, file);
+
+      if(base === "/") {
         response.writeHead(301,
           {Location: 'http://localhost:8124/login'}
         );
         response.end();
-      } else if(request.url === "/login") {
-        var login_handler = require("./login.js");
-        login_handler.handle(request, response, passed_data);
 
-      } else if(request.url === "/newUser") {
-        var new_user_handler = require("./newUser.js");
-        new_user_handler.handle(request, response, passed_data);
+      } else if(base === "favicon.ico") {
+        console.log("Favicon requested!"); // Will eventually deal with this
 
-      } else if(request.url === "/menu") {
-        var menu_handler = require("./menu.js");
-        menu_handler.handle(request, response, passed_data);
-
-      } else if(request.url === "/reviewOrder" || request.url === "/reviewOrder/getItemOrder") {
-        var review_handler = require("./reviewOrder.js");
-        review_handler.handle(request, response, passed_data);
-
-      } else if(request.url === "/checkout") {
-        var checkout_handler = require("./checkout.js");
-        checkout_handler.handle(request, response, passed_data);
-
-      // } else if(request.url === "/confirmation") {
-      //   var confirmation_handler = require("./confirmation.js");
-      //   confirmation_handler.handle(request, response, passed_data);
+      } else if(require('fs').existsSync(filepath)) {
+        require(file).handle(request, response, passed_data);
 
       } else {
-        // Could also have an error.js that deals with various errors
-        console.log("Non-existent: "+filepath);
+        console.log("Bad URL: "+request.url);
+        response.writeHead(404);
+        response.end("<html><body>This page doesn't exist!</body></html>");
 
       }
     }) // on end
