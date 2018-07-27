@@ -15,29 +15,35 @@ module.exports = {
     if(pool) return pool; // Singleton
     pool = db.serialize(function() {
       db.run('CREATE TABLE loginInfo ('
-              + 'authenticationToken varchcar(255),'
-              + 'userId varchar(255),'
-              + 'username varchar(255),'
-              + 'password varchar(255)'
+              + 'authenticationToken VARCHAR(255),'
+              + 'username VARCHAR(255),'
+              + 'password VARCHAR(255)'
               + ');')
         .run('CREATE TABLE menuItems ('
-              + 'itemName varchar(255),'
-              + 'price real'
+              // + 'itemName VARCHAR(255)'
+              + 'itemName VARCHAR(255),'
+              + 'itemDescription VARCHAR(255),'
+              + 'unitPrice REAL'
               + ');')
         .run('CREATE TABLE orderedItems ('
-              + 'itemName varchar(255),'
-              + 'quantity varchar(255),'
-              + 'unitPrice varchar(255),'
-              + 'totalPerItem varchar(255),'
-              + 'totalOrder varchar(255),'
-              + 'username varchar(255),'
+              + 'itemName VARCHAR(255),'
+              + 'unitPrice REAL,'
+              + 'quantity INTEGER,'
+              + 'totalPricePerItem VARCHAR(255),'
+              + 'totalPriceOfOrder VARCHAR(255),'
+              + 'username VARCHAR(255),'
               + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
               + ');');
 
-      db.run("INSERT INTO loginInfo (userId, username, password) VALUES"
-        + " ('123', 'admin', 'pass')")
-        .run("INSERT INTO loginInfo (userId, username, password) VALUES"
-        + " ('123', 'admin2', 'pass2')");
+      db.run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
+        + " ('Fish Filet', 'Yummy fish in a sandwich.', 9.95)")
+        .run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
+        + " ('Turkey breast', 'White-meat turket breast, atop of a baguette.', 12.75)");
+
+      db.run("INSERT INTO loginInfo (username, password) VALUES"
+        + " ('admin', 'pass')")
+        .run("INSERT INTO loginInfo (username, password) VALUES"
+        + " ('admin2', 'pass2')");
 
       db.run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
         + " ('Chunky Soup', '10', 'temporaryUser')")
