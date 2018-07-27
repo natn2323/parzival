@@ -43,28 +43,30 @@ module.exports = {
       /* Preventing direct access to /menu, etc. without first starting at
          login screen by checking the 'referer', i.e. the previous page.
          Might be an issue later when we have more pages linked together. */
-      let base = url_split_path[0],
-          file = "./" + base + ".js",
-          filepath = require('path').join(__dirname, file);
+       let base = url_split_path[0],
+           file = "./" + base + ".js",
+           filepath = require('path').join(__dirname, file);
 
-      if(base === "/") {
-        response.writeHead(301,
-          {Location: 'http://localhost:8124/login'}
-        );
-        response.end();
+       if(base === "/") {
+         response.writeHead(301,
+           {Location: 'http://localhost:8124/login'}
+         );
+         response.end();
 
-      } else if(base === "favicon.ico") {
-        console.log("Favicon requested!"); // Will eventually deal with this
+       } else if(base === "favicon.ico") {
+         console.log("Favicon requested!"); // Will eventually deal with this
+         response.writeHead(200);
+         response.end();
 
-      } else if(require('fs').existsSync(filepath)) {
-        require(file).handle(request, response, passed_data);
+       } else if(require('fs').existsSync(filepath)) {
+         require(file).handle(request, response, passed_data);
 
-      } else {
-        console.log("Bad URL: "+request.url);
-        response.writeHead(404);
-        response.end("<html><body>This page doesn't exist!</body></html>");
+       } else {
+         console.log("Bad URL: "+request.url);
+         response.writeHead(404);
+         response.end("<html><body>This page doesn't exist!</body></html>");
 
-      }
+       }
     }) // on end
   } // end serve
 } // end of file
