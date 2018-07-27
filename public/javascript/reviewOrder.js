@@ -71,9 +71,7 @@ function getItemOrder(username) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
-    db.all('SELECT * FROM orderedItems WHERE username=$username', {
-        $username: username
-      },
+    db.all('SELECT * FROM orderedItems',
       function(err, rows) {
         if(err) {
           reject(err);
