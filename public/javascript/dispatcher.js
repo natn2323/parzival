@@ -33,7 +33,7 @@ module.exports = {
         .pathname
         .split('/')
         .slice(1, this.length);
-      console.log("Original url is: "+url_split_path);
+      // console.log("Original url is: "+url_split_path);
 
       // // A dictionary-representation of the query string
       // var url_query = require('url')

@@ -39,7 +39,15 @@ function GETHandler(request, response) {
 
 function POSTHandler(request, response, data) {
   console.log("Menu posthandler entered");
-  processOrderHandler(request, response, data);
+
+  let path_arr = require('./utils.js').getSubPath(request);
+  if (path_arr.length === 2
+    && path_arr[0] === "menu"
+    && path_arr[1] === "order") {
+    console.log("Menu click handler entered!");
+    processOrderHandler(request, response, data);
+
+  } // end submit handler
 } // end POSTHandler
 
 
@@ -117,8 +125,6 @@ function processOrder(data) {
     var db = require('./DBManager.js').getPool();
 
     for(let i = 0; i < data['content'].length; i++) {
-      console.log("Process order is here!");
-      console.log("P.O. value is: "+data.content);
       let unit = data['content'][i];
 
       db.run("INSERT INTO orderedItems "
