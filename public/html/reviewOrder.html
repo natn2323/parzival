@@ -43,7 +43,7 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			var xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/reviewOrder",
+					url = "http://localhost:8124/reviewOrder/order",
 					area = document.getElementById('reviewOrder');
 
 			// Do GET request here and parse data
@@ -103,7 +103,7 @@
 
 					// Create submit button
 					let button = document.createElement("button");
-					button.type = "submit";
+					button.type = "button";
 					button.onclick = submitClick;
 					button.innerText = "Proceed to checkout";
 
@@ -121,7 +121,7 @@
 		function submitClick() {
 			let xhttp = new XMLHttpRequest(),
 					method = "POST",
-					url = "http://localhost:8124/reviewOrder/makeOrder/",
+					url = "http://localhost:8124/reviewOrder/makeOrder",
 					dataElements = document.getElementById('reviewOrder'),
 					labels = document.getElementsByTagName('label'),
 					itemName = '',
@@ -148,7 +148,7 @@
 			xhttp.onreadystatechange = function() {
 				if(xhttp.readyState === 4 && xhttp.status === 200) {
 					//Contains the redirection URL
-					if(xhttp.response.URL) {
+					if(xhttp.responseURL) {
 						// window.location.href does a GET request
 						window.location.href = xhttp.responseURL;
 					} else {

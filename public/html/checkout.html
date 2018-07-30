@@ -37,30 +37,126 @@
 			height: 100vh;
 		}
 	</style>
+
+	<script>
+	// Method #1
+	document.addEventListener('DOMContentLoaded', function() {
+		var xhttp = new XMLHttpRequest(),
+				method = "GET",
+				url = "http://localhost:8124/checkout/order",
+				area = document.getElementById('checkoutForm');
+
+		// Do GET request here and parse data
+		xhttp.open(method, url, true);
+		xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		xhttp.send();
+
+		xhttp.onreadystatechange = function() {
+			if(xhttp.readyState === 4 && xhttp.status === 200) {
+				console.log("Entered!");
+				// Now you've got the data
+				let response = JSON.parse(xhttp.responseText),
+						content = response['content'],
+						frag = document.createDocumentFragment();
+
+				// Now we're replacing placeholders in template
+				for (let i = 0; i < content.length; i++) {
+					let itemName = content[i].item,
+							quantity = content[i].quantity;
+
+					// Create div
+					let div = document.createElement("div");
+					div.id = `item_${i}`;
+
+					// Create nested divs
+					let inner_div = document.createElement("div");
+					inner_div.innerText = itemName + ": " + quantity;
+
+					// Appending
+					div.appendChild(inner_div);
+					frag.appendChild(div);
+
+				} // end for
+
+				// Create wrapper for submit button
+				let submit_div = document.createElement("div");
+				submit_div.id = "review-order-submit";
+
+				// Create submit button
+				let button = document.createElement("button");
+				button.type = "button";
+				button.onclick = submitClick;
+				button.innerText = "Confirm order";
+
+				// Appending
+				submit_div.appendChild(button);
+				frag.appendChild(submit_div);
+
+				// Append fragment to the form
+				area.appendChild(frag);
+
+			} // end if
+		} // end onreadystatechange
+	}); // end eventlistener
+
+	function submitClick() {
+		let xhttp = new XMLHttpRequest(),
+				method = "POST",
+				url = "http://localhost:8124/checkout/confirm",
+				dataElements = document.getElementById('reviewOrder'),
+				labels = document.getElementsByTagName('label'),
+				itemName = '',
+				key = '',
+				quantity = 0,
+				dataToSubmit = {'content':[]};
+		for (let i = 0; i < labels.length; i++) {
+			if (labels[i].htmlFor !== '') {
+				itemName = labels[i].textContent;
+				key = labels[i].htmlFor;
+				quantity = dataElements.elements[key].value;
+				dataToSubmit['content'].push({
+					'item': itemName,
+					'quantity': quantity
+				});
+			} // end if
+		} // end for
+
+		xhttp.open(method, url, true);
+		xhttp.setRequestHeader('Content-Type', 'application/json');
+		xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		xhttp.send(JSON.stringify(dataToSubmit));
+
+		xhttp.onreadystatechange = function() {
+			if(xhttp.readyState === 4 && xhttp.status === 200) {
+				//Contains the redirection URL
+				if(xhttp.responseURL) {
+					// window.location.href does a GET request
+					window.location.href = xhttp.responseURL;
+				} else {
+					console.log("Nowhere to redirect to!");
+				}
+
+			} // end if
+		}; // end onreadystatechange
+
+	} // end submitClick
+	</script>
 </head>
 
 
 <body>
-	<form action="/login" method="POST" class="login">
-		<div class="leftContent">&nbsp;</div>
-		<div class="centerContent">
-			<div class="header">
-				<h1>Welcome to Bonnie's Vegan Cuisine<h1>
-			</div>
-			<div id="username">
-				<label for="username">Enter your username: </label>
-				<input type="text" name="username" id="username" required>
-			</div>
-			<div id="password">
-				<label for="password">Enter your password: </label>
-				<input type="text" name="password" id="password" required>
-			</div>
-			<div id="login-submit">
-				<input type="submit" value="Login">
-			</div>
+	<div class="leftContent">&nbsp;</div>
+	<div class="centerContent">
+		<div class="header">
+			<h1>Welcome to Bonnie's Vegan Cuisine<h1>
 		</div>
-		<div class="rightContent">&nbsp;</div>
-	</form>
+
+		<form id="checkoutForm">
+			<!-- Append checkout here! -->
+		</form>
+
+	</div>
+	<div class="rightContent">&nbsp;</div>
 </body>
 
 

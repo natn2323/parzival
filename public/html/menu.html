@@ -110,7 +110,7 @@
 					let button = document.createElement("button");
 					button.type = "button";
 					button.onclick = submitClick;
-					button.innerText = "Place Order"
+					button.innerText = "Place Order";
 
 					// Appending
 					submit_div.appendChild(button);
@@ -126,7 +126,7 @@
 		function submitClick() {
 			let xhttp = new XMLHttpRequest(),
 				  method = "POST",
-					url = "http://localhost:8124/menu", // TODO: Perhaps change
+					url = "http://localhost:8124/menu/order",
 					dataElements = document.getElementById('menuForm'),
 					labels = document.getElementsByTagName('label'),
 					itemName = '',
@@ -138,10 +138,19 @@
 					itemName = labels[i].textContent;
 					key = labels[i].htmlFor;
 					quantity = dataElements.elements[key].value;
-					dataToSubmit['content'].push({
-						'item': itemName,
-						'quantity': quantity
-					});
+
+					// Prevent unselected items from being populating
+					if(parseInt(quantity) === 0) {
+						console.log("Not entered!");
+						continue;
+
+					} else {
+						dataToSubmit['content'].push({
+							'item': itemName,
+							'quantity': quantity
+						});
+
+					} // end else
 				} // end if
 			} // end for
 
