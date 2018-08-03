@@ -16,6 +16,7 @@ module.exports = {
     pool = db.serialize(function() {
       db.run('CREATE TABLE loginInfo ('
               + 'authenticationToken VARCHAR(255),'
+              + 'createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,'
               + 'username VARCHAR(255),'
               + 'password VARCHAR(255)'
               + ');')
