@@ -31,7 +31,7 @@ function GETHandler(request, response) {
   } else if (path_arr.length > 1
     && path_arr[0] === "newUser"
     && path_arr[1] === "check") {
-    printUsers(response);
+    getAllUsersHandler(request, response);
 
   } // end else if
 } // end function
@@ -44,84 +44,75 @@ function POSTHandler(request, response, data) {
 /************************************************************************
  *************************** HELPER FUNCTIONS ***************************
  ************************************************************************/
-function printUsers(response) {
-  let db = require('./DBManager.js').getPool();
 
-  db.each("SELECT * FROM loginInfo", function(err, row) {
-    console.log(row.createdAt+":: "+row.username+": "+row.password);
-  });
-  response.end();
+function getAllUsersHandler(requeust, response) {
+  let printUsersPromise = getAllUsers();
+  printUsersPromise.then(function(rows) {
+    if(rows) {
+      console.log("User logins retrieved!");
+      // Parsing data
+      let dataToSubmit = {'content': []};
+      for(let i = 0; i < rows.length; i++) {
+        let unit = rows[i];
+        dataToSubmit['content'].push({
+          'createdAt': unit.createdAt,
+          'username': unit.username,
+          'password': unit.password
+        }); // end push
+      } // end for
+
+      response.writeHead(200, {'Content-Type': 'application/json'});
+      response.end(JSON.stringify(dataToSubmit));
+
+    } // end if
+  }); // end promise
+} // end getAllUsersHandler
+
+function getAllUsers() {
+  return new Promise(function(resolve, reject) {
+    let db = require('./DBManager.js').getPool();
+
+    db.all("SELECT * FROM loginInfo",
+      function(err, rows) {
+        if(err) {
+          reject(err);
+
+        } else if (rows.length>0) {
+          resolve(rows);
+
+        } else if (rows.length===0) {
+          resolve(false);
+
+        }
+    }); // end query
+  }); // end return
 }
 
 function createNewUserHandler(request, response, data) {
   let username = data.username,
       password = data.password,
       precheck = "pre",
-      postcheck = "post",
-      map = new Map();
+      postcheck = "post";
 
+  /* Check that the login doesn't exist, create it, verify, then redirect */
   checkUserExists(username, precheck)
-    .catch(function(err) {
-      console.log("Error is thrown when checking user: "+err);
-      // return Promise.reject("Error is thrown when checking user: "+err);
-      // throw new Error("This should be printed!");
+    .then(() => createNewUser(username, password))
+    .then(() => checkUserExists(username, postcheck))
+    .then(() => {
+      response.writeHead(301,
+        {Location: 'http://localhost:8124/login'}
+      );
+      response.end();
     })
-    .then(function(result) {
-      console.log("What the hell is the result: "+result);
-    })
-    .catch(function(err) {
-      console.log("But this is: "+err);
+    /* If the user existed, SQLite threw an error, or the user wasn't created,
+       then output the error and redisplay the newUser page*/
+    .catch(err => {
+      console.log("Caught error: "+err);
       response.writeHead(301,
         {Location: 'http://localhost:8124/newUser'}
       );
       response.end();
-    })
-    // .then(createNewUser(username, password))
-    // .then(checkUserExists(username, postcheck))
-    // .then(function() {
-    //   response.writeHead(301,
-    //     {Location: 'http://localhost:8124/login'}
-    //   );
-    //   response.end();
-    //
-    // })
-    // .catch(function(err) {
-    //   response.writeHead(301,
-    //     {Location: 'http://localhost:8124/newUser'}
-    //   );
-    //   response.end();
-    //   console.log("Error is thrown in the process of creating a new user: "+err);
-    // });
-
-  // let username = data.username,
-  //     password = data.password,
-  //     precheck = "pre",
-  //     postcheck = "post",
-  //     map = new Map();
-  //
-  // map.set([username, precheck], checkUserExists(username, precheck));
-  // map.set([username, password], createNewUser(username, password));
-  // map.set([username, postcheck], checkUserExists(username, postcheck));
-  //
-  // Promise.all(map.values()).then(function(result) {
-  //   response.writeHead(301,
-  //     {Location: 'http://localhost:8124/login'}
-  //   );
-  //   response.end();
-  //   return true; // successfully created new user
-  //
-  // }).catch(function(err) {
-  //   response.writeHead(301,
-  //     {Location: 'http://localhost:8124/newUser'}
-  //   );
-  //   response.end();
-  //   console.log("Error is thrown trying to create new user: "+err);
-  //
-  //   return false;
-  //
-  // }).then(function(result) {
-  //
-  // }); // end promise
+    }); // end promise chain
 
 } // end createNewUserHandler
 

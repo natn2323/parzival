@@ -36,32 +36,112 @@
 		.centerContent, .leftContent, .rightContent {
 			height: 100vh;
 		}
+		#show-users {
+			width: 100%;
+			text-align: center;
+		}
 	</style>
+
+	<script>
+
+		function getLoginInfo() {
+			let xhttp = new XMLHttpRequest(),
+					method = "GET",
+					url = "http://localhost:8124/newUser/check",
+					table = document.getElementById("show-users");
+
+			if(table) {
+				table.innerHTML = "";
+			}
+
+			xhttp.open(method, url, true);
+			xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+			xhttp.send();
+
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200) {
+					console.log("Showing all users on client-side!");
+
+					// Now you've got the data
+					let response = JSON.parse(xhttp.responseText),
+							content = response['content'],
+							frag = document.createDocumentFragment();
+
+					// Now we're populating
+					for (let i = 0; i < content.length; i++) {
+						let createdAt = content[i].createdAt,
+								username = content[i].username,
+								password = content[i].password;
+
+						let createdAt_td = document.createElement("td");
+						createdAt_td.innerText = createdAt;
+
+						let username_td = document.createElement("td");
+						username_td.innerText = username;
+
+						let password_td = document.createElement("td");
+						password_td.innerText = password;
+
+						let row = document.createElement("tr");
+
+						// Appending
+						row.appendChild(createdAt_td);
+						row.appendChild(username_td);
+						row.appendChild(password_td);
+						frag.appendChild(row);
+
+					} // end for
+
+					// Appending frag
+					table.appendChild(frag);
+
+				} // end if
+			} // end onreadystatechange
+		} // end getLoginInfo
+
+	</script>
 </head>
 
 
 <body>
-	<form action="/newUser" method="POST" class="newUser">
-		<div>
-			<label for="username">Enter your username: </label>
-			<input type="text" name="username" required>
-		</div>
-		<div>
-			<label for="password">Enter your password: </label>
-			<input type="text" name="password" required>
-		</div>
-		<div>
-			<label for="confirm_password">Re-enter your password: </label>
-			<input type="text" name="confirm_password"required>
-		</div>
-		<div id="new-user-submit">
-			<input type="submit" value="NewUser">
-		</div>
-	</form>
+	<div class="leftContent">&nbsp;</div>
 
-	<form action="/newUser/check" method="GET">
-		<input type="submit" value="CHECK USERS">
-	</form>
+	<div class="centerContent">
+		<div class="header">
+			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+		</div>
+
+		<form action="/newUser" method="POST" class="newUser">
+			<div>
+				<label for="username">Enter your username: </label>
+				<input type="text" name="username" required>
+			</div>
+			<div>
+				<label for="password">Enter your password: </label>
+				<input type="text" name="password" required>
+			</div>
+			<div>
+				<label for="confirm_password">Re-enter your password: </label>
+				<input type="text" name="confirm_password"required>
+			</div>
+			<div id="new-user-submit">
+				<input type="submit" value="NewUser">
+			</div>
+		</form>
+
+		<button type="button" onclick="getLoginInfo()">
+			Get All Users
+		</button>
+
+		<table id="show-users">
+			<!-- Populate this table! -->
+		</table>
+
+	</div>
+
+	<div class="rightContent">
+		&nbsp;
+	</div>
 
 </body>
 
