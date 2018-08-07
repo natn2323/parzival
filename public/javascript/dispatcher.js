@@ -47,7 +47,7 @@ module.exports = {
            file = "./" + base + ".js",
            filepath = require('path').join(__dirname, file);
 
-       if(base === "/") {
+       if(base === "" ) { // This means you're accessing '/'
          response.writeHead(301,
            {Location: 'http://localhost:8124/login'}
          );
