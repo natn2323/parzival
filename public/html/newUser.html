@@ -30,15 +30,28 @@
 		}
 		.rightContent {
 			background: lightblue;
-			width: 15%;
+			width: 14.9%; /* preventing overlap with center content */
 			float:right;
 		}
 		.centerContent, .leftContent, .rightContent {
 			height: 100vh;
 		}
 		#show-users {
+			overflow: hidden;
+			text-align: left;
+			display: none;
+
+			/* needed for below; add padding within table element */
+			box-sizing: border-box;
+			padding-left: 3%;
+			padding-right: 3%;
+		}
+		#show-users, th, td {
+			border: 1px solid black;
 			width: 100%;
-			text-align: center;
+		}
+		button + table {
+			margin-top: 10px;
 		}
 	</style>
 
@@ -47,11 +60,12 @@
 		function getLoginInfo() {
 			let xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/newUser/check",
+					url = "http://localhost:8124/newUser/check/",
 					table = document.getElementById("show-users");
 
-			if(table) {
+			if(table.innerHTML !== "") {
 				table.innerHTML = "";
+				table.style.display = "block";
 			}
 
 			xhttp.open(method, url, true);
@@ -66,6 +80,21 @@
 					let response = JSON.parse(xhttp.responseText),
 							content = response['content'],
 							frag = document.createDocumentFragment();
+
+					// Adding table headers
+					let header_tr = document.createElement("tr"),
+							header_th_createdAt = document.createElement("th"),
+							header_th_username = document.createElement("th"),
+							header_th_password = document.createElement("th");
+
+					header_th_createdAt.innerText = "Created At: ";
+					header_th_username.innerText = "Username: ";
+					header_th_password.innerText = "Password: ";
+
+					header_tr.appendChild(header_th_createdAt);
+					header_tr.appendChild(header_th_username);
+					header_tr.appendChild(header_th_password);
+					frag.appendChild(header_tr);
 
 					// Now we're populating
 					for (let i = 0; i < content.length; i++) {
