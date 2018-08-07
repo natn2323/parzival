@@ -26,6 +26,15 @@ module.exports = {
               + 'itemDescription VARCHAR(255),'
               + 'unitPrice REAL'
               + ');')
+        .run('CREATE TABLE reviewItems ('
+              + 'itemName VARCHAR(255),'
+              + 'unitPrice REAL,'
+              + 'quantity INTEGER,'
+              + 'totalPricePerItem VARCHAR(255),'
+              + 'totalPriceOfOrder VARCHAR(255),'
+              + 'username VARCHAR(255),'
+              + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
+              + ');')
         .run('CREATE TABLE orderedItems ('
               + 'itemName VARCHAR(255),'
               + 'unitPrice REAL,'
@@ -46,10 +55,10 @@ module.exports = {
         .run("INSERT INTO loginInfo (username, password) VALUES"
         + " ('admin2', 'pass2')");
 
-      db.run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
-        + " ('Chunky Soup', '10', 'temporaryUser')")
-        .run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
-          + " ('Soft Sandwich', '2', 'temporaryUser')")
+      // db.run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
+      //   + " ('Chunky Soup', '10', 'temporaryUser')")
+      //   .run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
+      //     + " ('Soft Sandwich', '2', 'temporaryUser')")
     });
     return pool;
 

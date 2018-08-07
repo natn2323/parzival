@@ -86,20 +86,20 @@ function makeOrder(request, response, data) {
       // TODO: Add unit price, item prices, and total order price
       // Don't need to re-add items
 
-      // db.run("INSERT INTO orderedItems "
-      //   + "(itemName, quantity) VALUES"
-      //   + "($itemName, $quantity)",
-      // {
-      //   $itemName: unit.item,
-      //   $quantity: unit.quantity
-      // },
-      // function(err) {
-      //   if(!err) {
-      //     // Could do something here
-      //   } else {
-      //     reject(err);
-      //   }
-      // }); // end run
+      db.run("INSERT INTO orderedItems "
+        + "(itemName, quantity) VALUES"
+        + "($itemName, $quantity)",
+      {
+        $itemName: unit.item,
+        $quantity: unit.quantity
+      },
+      function(err) {
+        if(!err) {
+          // Could do something here
+        } else {
+          reject(err);
+        }
+      }); // end run
 
     } // end for
     resolve(true);
@@ -140,7 +140,7 @@ function getItemOrder(username) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
-    db.all('SELECT * FROM orderedItems',
+    db.all('SELECT * FROM reviewItems',
       function(err, rows) {
         if(err) {
           reject(err);

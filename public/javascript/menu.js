@@ -127,7 +127,7 @@ function processOrder(data) {
     for(let i = 0; i < data['content'].length; i++) {
       let unit = data['content'][i];
 
-      db.run("INSERT INTO orderedItems "
+      db.run("INSERT INTO reviewItems "
         + "(itemName, quantity) VALUES"
         + "($itemName, $quantity)",
         {
