@@ -13,53 +13,63 @@ module.exports = {
   // Initializing database and adding some mock data
   getPool: function() {
     if(pool) return pool; // Singleton
-    pool = db.serialize(function() {
-      db.run('CREATE TABLE loginInfo ('
-              + 'authenticationToken VARCHAR(255),'
-              + 'createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,'
-              + 'username VARCHAR(255),'
-              + 'password VARCHAR(255)'
-              + ');')
-        .run('CREATE TABLE menuItems ('
-              // + 'itemName VARCHAR(255)'
-              + 'itemName VARCHAR(255),'
-              + 'itemDescription VARCHAR(255),'
-              + 'unitPrice REAL'
-              + ');')
-        .run('CREATE TABLE reviewItems ('
-              + 'itemName VARCHAR(255),'
-              + 'unitPrice REAL,'
-              + 'quantity INTEGER,'
-              + 'totalPricePerItem VARCHAR(255),'
-              + 'totalPriceOfOrder VARCHAR(255),'
-              + 'username VARCHAR(255),'
-              + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
-              + ');')
-        .run('CREATE TABLE orderedItems ('
-              + 'itemName VARCHAR(255),'
-              + 'unitPrice REAL,'
-              + 'quantity INTEGER,'
-              + 'totalPricePerItem VARCHAR(255),'
-              + 'totalPriceOfOrder VARCHAR(255),'
-              + 'username VARCHAR(255),'
-              + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
-              + ');');
 
-      db.run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
-        + " ('Fish Filet', 'Yummy fish in a sandwich.', 9.95)")
-        .run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
-        + " ('Turkey breast', 'White-meat turket breast, atop of a baguette.', 12.75)");
+    let csvPromise = getCSV();
+    csvPromise.then(function(result) {
+      pool = db.serialize(function() {
+        db.run('CREATE TABLE loginInfo ('
+                + 'authenticationToken VARCHAR(255),'
+                + 'createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,'
+                + 'username VARCHAR(255),'
+                + 'password VARCHAR(255)'
+                + ');')
+          .run('CREATE TABLE menuItems ('
+                + 'itemName VARCHAR(255),'
+                + 'itemDescription VARCHAR(255),'
+                + 'unitPrice REAL'
+                + ');')
+          .run('CREATE TABLE reviewItems ('
+                + 'itemName VARCHAR(255),'
+                + 'unitPrice REAL,'
+                + 'quantity INTEGER,'
+                + 'totalPricePerItem VARCHAR(255),'
+                + 'totalPriceOfOrder VARCHAR(255),'
+                + 'username VARCHAR(255),'
+                + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
+                + ');')
+          .run('CREATE TABLE orderedItems ('
+                + 'itemName VARCHAR(255),'
+                + 'unitPrice REAL,'
+                + 'quantity INTEGER,'
+                + 'totalPricePerItem VARCHAR(255),'
+                + 'totalPriceOfOrder VARCHAR(255),'
+                + 'username VARCHAR(255),'
+                + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
+                + ');');
 
-      db.run("INSERT INTO loginInfo (username, password) VALUES"
-        + " ('admin', 'pass')")
-        .run("INSERT INTO loginInfo (username, password) VALUES"
-        + " ('admin2', 'pass2')");
+        db.run("INSERT INTO loginInfo (username, password) VALUES"
+          + " ('admin', 'pass')")
+          .run("INSERT INTO loginInfo (username, password) VALUES"
+          + " ('admin2', 'pass2')");
 
-      // db.run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
-      //   + " ('Chunky Soup', '10', 'temporaryUser')")
-      //   .run("INSERT INTO orderedItems (itemName, quantity, username) VALUES"
-      //     + " ('Soft Sandwich', '2', 'temporaryUser')")
-    });
+        db.run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
+          + " ('Olives', 'Tastey olives.', 0.50)");
+
+        // INsert items from CSV into menuItems table
+        for(let i = 0; i < result.length; i++) {
+          let unit = result[i];
+          db.run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
+            + " ($itemName, $itemDescription, $unitPrice)",
+          {
+            $itemName: unit.itemName,
+            $itemDescription: unit.itemDescription,
+            $unitPrice: unit.unitPrice
+          });
+        } // end for
+
+      });
+    })
+
     return pool;
 
   }, // end getPool
@@ -68,3 +78,46 @@ module.exports = {
     return [current_username, current_password];
   }
 } // end exports
+
+
+/*************************************************************************
+ *************************** PRIVATE FUNCTIONS ***************************
+ *************************************************************************/
+ 
+function getCSV() {
+  return new Promise(function(resolve, reject) {
+    require('fs').readFile('C:/Users/nguyenn2345/Desktop/parzival/public/data/menuItems.tsv', "utf8", function(err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        let lines = data.split('\n'),
+            columns = [],
+            item = {},
+            menuItems = [];
+        console.log("lines are: "+lines);
+
+        for(let i = 0; i < lines.length - 1; i++) {
+          // Skip the row of column headers
+          if(i === 0) continue;
+
+          let line = lines[i],
+              columns = line.split('  ');
+
+          let id = columns[0],
+              itemName = columns[1],
+              itemDescription = columns[2],
+              unitPrice = columns[3];
+
+          menuItems.push({
+            "itemName": itemName,
+            "itemDescription": itemDescription,
+            "unitPrice": unitPrice
+          });
+
+        } // end for
+        resolve(menuItems);
+
+      } // end else
+    }); // end readFile
+  }); // return promise
+} // end getCSV
