@@ -24,20 +24,18 @@ module.exports = {
                 + 'password VARCHAR(255)'
                 + ');')
           .run('CREATE TABLE menuItems ('
+                + 'itemId INTEGER,'
                 + 'itemName VARCHAR(255),'
                 + 'itemDescription VARCHAR(255),'
                 + 'unitPrice REAL'
                 + ');')
           .run('CREATE TABLE reviewItems ('
-                + 'itemName VARCHAR(255),'
-                + 'unitPrice REAL,'
+                + 'itemId INTEGER,'
                 + 'quantity INTEGER,'
-                + 'totalPricePerItem VARCHAR(255),'
-                + 'totalPriceOfOrder VARCHAR(255),'
-                + 'username VARCHAR(255),'
-                + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
+                + 'username VARCHAR(255)'
                 + ');')
           .run('CREATE TABLE orderedItems ('
+                + 'itemId INTEGER,'
                 + 'itemName VARCHAR(255),'
                 + 'unitPrice REAL,'
                 + 'quantity INTEGER,'
@@ -52,15 +50,14 @@ module.exports = {
           .run("INSERT INTO loginInfo (username, password) VALUES"
           + " ('admin2', 'pass2')");
 
-        db.run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
-          + " ('Olives', 'Tastey olives.', 0.50)");
-
-        // INsert items from CSV into menuItems table
+        // Insert items from CSV into menuItems table
         for(let i = 0; i < result.length; i++) {
           let unit = result[i];
-          db.run("INSERT INTO menuItems (itemName, itemDescription, unitPrice) VALUES"
-            + " ($itemName, $itemDescription, $unitPrice)",
+          db.run("INSERT INTO menuItems"
+            + " (itemId, itemName, itemDescription, unitPrice) VALUES"
+            + " ($itemId, $itemName, $itemDescription, $unitPrice)",
           {
+            $itemId: unit.itemId,
             $itemName: unit.itemName,
             $itemDescription: unit.itemDescription,
             $unitPrice: unit.unitPrice
@@ -83,7 +80,7 @@ module.exports = {
 /*************************************************************************
  *************************** PRIVATE FUNCTIONS ***************************
  *************************************************************************/
- 
+
 function getCSV() {
   return new Promise(function(resolve, reject) {
     require('fs').readFile('C:/Users/nguyenn2345/Desktop/parzival/public/data/menuItems.tsv', "utf8", function(err, data) {
@@ -94,7 +91,6 @@ function getCSV() {
             columns = [],
             item = {},
             menuItems = [];
-        console.log("lines are: "+lines);
 
         for(let i = 0; i < lines.length - 1; i++) {
           // Skip the row of column headers
@@ -103,12 +99,13 @@ function getCSV() {
           let line = lines[i],
               columns = line.split('  ');
 
-          let id = columns[0],
+          let itemId = columns[0],
               itemName = columns[1],
               itemDescription = columns[2],
               unitPrice = columns[3];
 
           menuItems.push({
+            "itemId": itemId,
             "itemName": itemName,
             "itemDescription": itemDescription,
             "unitPrice": unitPrice

@@ -61,13 +61,13 @@
 
 					// Now we're replacing placeholders in template
 					for (let i = 0; i < content.length; i++) {
-						let itemName = content[i].itemName,
+						let itemId = content[i].itemId,
+								itemName = content[i].itemName,
 								itemDescription = content[i].itemDescription,
 								unitPrice = content[i].unitPrice;
 
 						// Create div
 						let div = document.createElement("div");
-						div.id = `item_${i}`;
 
 						// Create input
 						let input = document.createElement("input");
@@ -75,17 +75,18 @@
 						input.min = 0;
 						// Client-side verification of input
 						input.setAttribute("oninput", "validity.valid||(value='');");
-						input.name = `${itemName}`;
+						input.name = itemName;
 						input.value = 0;
 
 						// Create label for itemName
 						let label = document.createElement("label");
-						label.htmlFor = `${itemName}`;
-						label.innerText = `${itemName}`;
+						label.id = itemId;
+						label.htmlFor = itemName;
+						label.innerText = itemName;
 
 						// Create label for unitPrice
 						let price = document.createElement("span");
-						price.id = `price_${i}`;
+						price.id = `price_${itemId}`;
 						price.innerText = '$' + unitPrice;
 
 						// Create label for itemDescription
@@ -129,13 +130,13 @@
 					url = "http://localhost:8124/menu/order",
 					dataElements = document.getElementById('menuForm'),
 					labels = document.getElementsByTagName('label'),
-					itemName = '',
+					itemId = 0,
 					key = '',
 					quantity = 0,
 					dataToSubmit = {'content':[]};
 			for (let i = 0; i < labels.length; i++) {
 				if (labels[i].htmlFor !== '') {
-					itemName = labels[i].textContent;
+					itemId = labels[i].id;
 					key = labels[i].htmlFor;
 					quantity = dataElements.elements[key].value;
 
@@ -146,7 +147,7 @@
 
 					} else {
 						dataToSubmit['content'].push({
-							'item': itemName,
+							'itemId': itemId,
 							'quantity': quantity
 						});
 

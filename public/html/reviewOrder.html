@@ -39,7 +39,7 @@
 	</style>
 
 	<script>
-		// Method #1
+	
 		document.addEventListener('DOMContentLoaded', function() {
 			var xhttp = new XMLHttpRequest(),
 					method = "GET",
@@ -61,29 +61,47 @@
 
 					// Now we're replacing placeholders in template
 					for (let i = 0; i < content.length; i++) {
-						let itemName = content[i].item,
+						let itemId = content[i].itemId,
+								itemName = content[i].itemName,
+								unitPrice = content[i].unitPrice,
 								quantity = content[i].quantity;
 
 						// Create div
 						let div = document.createElement("div");
 						div.id = `item_${i}`;
+						div.setAttribute('class', 'menu-item');
 
 						// Create input
 						let input = document.createElement("input");
 						input.type = "number";
 						input.min = 0;
-						input.name = `${itemName}`;
-						input.value = `${quantity}`;
+						input.name = itemName;
+						input.value = quantity;
 
-						// Create label
+						// Create label for itemName
 						let label = document.createElement("label");
-						label.htmlFor = `${itemName}`;
-						label.innerText = `${itemName}`;
+						label.id = itemId;
+						label.htmlFor = itemName;
+						label.innerText = itemName;
+
+						// Create label for unitPrice
+						let price = document.createElement("span");
+						price.id = `price_${itemId}`;
+						price.innerText = '$' + unitPrice;
+
+						// Create label for total that we'll be populating
+						let quantityMultipliedPrice = document.createElement("span");
+						quantityMultipliedPrice.id = `quantityMultipliedPrice_${itemId}`;
+						quantityMultipliedPrice.innerText = '$' + unitPrice*input.value;
+
+						input.onchange = () => {
+							quantityMultipliedPrice.innerText= '$' + unitPrice*input.value;
+						}
 
 						// Create "delete" button
 						let delete_button = document.createElement("button");
-						// delete_button.style = "background: url(delete_button.png)";
-						delete_button.onclick = function() {
+
+						delete_button.onclick = () => {
 							let selector = document.getElementById("reviewOrder");
 							let currDiv = document.getElementById(`item_${i}`);
 							selector.removeChild(currDiv);
@@ -92,6 +110,8 @@
 						// Appending
 						div.appendChild(input);
 						div.appendChild(label);
+						div.appendChild(price);
+						div.appendChild(quantityMultipliedPrice);
 						div.appendChild(delete_button);
 						frag.appendChild(div);
 
@@ -130,11 +150,11 @@
 					dataToSubmit = {'content':[]};
 			for (let i = 0; i < labels.length; i++) {
 				if (labels[i].htmlFor !== '') {
-					itemName = labels[i].textContent;
+					itemId = labels[i].id;
 					key = labels[i].htmlFor;
 					quantity = dataElements.elements[key].value;
 					dataToSubmit['content'].push({
-						'item': itemName,
+						'itemId': itemId,
 						'quantity': quantity
 					});
 				} // end if

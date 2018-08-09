@@ -65,6 +65,7 @@ function POSTHandler(request, response, data) {
        for(let i = 0; i < rows.length; i++) {
          let unit = rows[i];
          dataToSubmit['content'].push({
+           'itemId': unit.itemId,
            'itemName': unit.itemName,
            'itemDescription': unit.itemDescription,
            'unitPrice': unit.unitPrice
@@ -128,10 +129,10 @@ function processOrder(data) {
       let unit = data['content'][i];
 
       db.run("INSERT INTO reviewItems "
-        + "(itemName, quantity) VALUES"
-        + "($itemName, $quantity)",
+        + "(itemId, quantity) VALUES"
+        + "($itemId, $quantity)",
         {
-          $itemName: unit.item,
+          $itemId: unit.itemId,
           $quantity: unit.quantity
         },
         function(err) {

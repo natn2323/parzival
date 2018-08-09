@@ -86,11 +86,11 @@ function makeOrder(request, response, data) {
       // TODO: Add unit price, item prices, and total order price
       // Don't need to re-add items
 
-      db.run("INSERT INTO orderedItems "
-        + "(itemName, quantity) VALUES"
-        + "($itemName, $quantity)",
+      db.run("INSERT INTO orderedItems"
+        + " (itemId, quantity) VALUES"
+        + " ($itemId, $quantity);",
       {
-        $itemName: unit.item,
+        $itemId: unit.itemId,
         $quantity: unit.quantity
       },
       function(err) {
@@ -99,8 +99,36 @@ function makeOrder(request, response, data) {
         } else {
           reject(err);
         }
+      // })
+      // .run("UPDATE orderedItems"
+      //   + " SET orderedItems.itemName = menuItems.itemName,"
+      //   + " orderedItems.unitPrice = menuItems.unitPrice"
+      //   + " WHERE orderedItems.itemId = menuItems.itemId;",
+      // function(err) {
+      //   if(!err) {
+      //     // Could do something here
+      //   } else {
+      //     reject(err);
+      //   }
+      // })
+      // .run("UPDATE orderedItems"
+      //   + " SET orderedItems.totalPricePerItem = unitPrice*quantity;",
+      // function(err) {
+      //   if(!err) {
+      //     // Could do something here
+      //   } else {
+      //     reject(err);
+      //   }
+      // })
+      // .run("UPDATE orderedItems"
+      //   + " SET orderedItems.totalPriceOfOrder = totalPriceOfOrder + totalPricePerItem;",
+      // function(err) {
+      //   if(!err) {
+      //     // Could do something here
+      //   } else {
+      //     reject(err);
+      //   }
       }); // end run
-
     } // end for
     resolve(true);
 
@@ -122,7 +150,9 @@ function getItemOrderHandler(request, response) {
       for(let i = 0; i < rows.length; i++) {
         let unit = rows[i];
         dataToSubmit['content'].push({
-          'item': unit.itemName,
+          'itemId': unit.itemId,
+          'itemName': unit.itemName,
+          'unitPrice': unit.unitPrice,
           'quantity': unit.quantity
         });
       } // end for
@@ -140,7 +170,10 @@ function getItemOrder(username) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
-    db.all('SELECT * FROM reviewItems',
+    db.all('SELECT menuItems.itemId, menuItems.itemName, menuItems.unitPrice, reviewItems.quantity'
+      + ' FROM menuItems'
+      + ' INNER JOIN reviewItems'
+      + ' ON menuItems.itemId = reviewItems.itemId',
       function(err, rows) {
         if(err) {
           reject(err);

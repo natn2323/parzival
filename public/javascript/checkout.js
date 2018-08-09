@@ -58,11 +58,11 @@ function getOrderHandler(request, response) {
       for(let i = 0; i < rows.length; i++) {
         let unit = rows[i];
         dataToSubmit['content'].push({
-          'item': unit.itemName,
+          'itemName': unit.itemName,
           'quantity': unit.quantity
         });
       } // end for
-
+console.log(rows);
       response.writeHead('200', {'Content-Type': 'application/json'});
       response.end(JSON.stringify(dataToSubmit));
 
