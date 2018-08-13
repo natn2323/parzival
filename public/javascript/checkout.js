@@ -62,7 +62,7 @@ function getOrderHandler(request, response) {
           'quantity': unit.quantity
         });
       } // end for
-console.log(rows);
+      console.log(rows);
       response.writeHead('200', {'Content-Type': 'application/json'});
       response.end(JSON.stringify(dataToSubmit));
 

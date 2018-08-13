@@ -56,28 +56,40 @@ function POSTHandler(request, response, data) {
  ************************************************************************/
 
 function makeOrderHandler(request, response, data) {
-  let makePromise = makeOrder(request, response, data);
-  makePromise.then(function(ordered) {
-    if(ordered) {
-      console.log("Reviewed order items!");
+  // let makePromise = insertOrder(request, response, data);
+  // makePromise.then(function(ordered) {
+  //   if(ordered) {
+  //     console.log("Reviewed order items!");
+  //     response.writeHead(301,
+  //       {Location: 'http://localhost:8124/checkout'}
+  //     );
+  //     response.end();
+  //
+  //   } else {
+  //     response.writeHead(200, {'Content-Type': 'text/html'});
+  //     response.write('<html><body>Something went wrong after reviewing!</body></html>');
+  //     response.end();
+  //
+  //   }
+  // }, function(err) {
+  //   console.log("Error on makePromise: "+err);
+  //
+  // }); // end makePromise
+  insertOrder(request, response, data)
+    .then(() => updateItemNames(request, response, data))
+    .then(() => {
+      console.log("Updated items!");
       response.writeHead(301,
         {Location: 'http://localhost:8124/checkout'}
       );
       response.end();
-
-    } else {
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.write('<html><body>Something went wrong after reviewing!</body></html>');
-      response.end();
-
-    }
-  }, function(err) {
-    console.log("Error on makePromise: "+err);
-
-  }); // end makePromise
+    })
+    .catch(err => {
+      console.log("Caught error: "+err);
+    }); // end promise chain
 } // end makeOrderHandler
 
-function makeOrder(request, response, data) {
+function insertOrder(request, response, data) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
@@ -94,46 +106,36 @@ function makeOrder(request, response, data) {
         $quantity: unit.quantity
       },
       function(err) {
-        if(!err) {
-          // Could do something here
+        if(err) {
+          reject("SQLite3 insert error: "+err);
         } else {
-          reject(err);
-        }
-      // })
-      // .run("UPDATE orderedItems"
-      //   + " SET orderedItems.itemName = menuItems.itemName,"
-      //   + " orderedItems.unitPrice = menuItems.unitPrice"
-      //   + " WHERE orderedItems.itemId = menuItems.itemId;",
-      // function(err) {
-      //   if(!err) {
-      //     // Could do something here
-      //   } else {
-      //     reject(err);
-      //   }
-      // })
-      // .run("UPDATE orderedItems"
-      //   + " SET orderedItems.totalPricePerItem = unitPrice*quantity;",
-      // function(err) {
-      //   if(!err) {
-      //     // Could do something here
-      //   } else {
-      //     reject(err);
-      //   }
-      // })
-      // .run("UPDATE orderedItems"
-      //   + " SET orderedItems.totalPriceOfOrder = totalPriceOfOrder + totalPricePerItem;",
-      // function(err) {
-      //   if(!err) {
-      //     // Could do something here
-      //   } else {
-      //     reject(err);
-      //   }
+          resolve();
+        } // end else
       }); // end run
     } // end for
-    resolve(true);
-
   }); // end return
 } // end makeOrder
+
+function updateItemNames(request, response, data) {
+  return new Promise(function(resolve, reject) {
+    var db = require('./DBManager.js').getPool();
+
+    db.run("UPDATE orderedItems SET itemName = (SELECT menuItems.itemName FROM menuItems WHERE menuItems.itemId = orderedItems.itemId),"
+      + "unitPrice = (SELECT menuItems.unitPrice FROM menuItems WHERE menuItems.itemId = orderedItems.itemId)"
+      + "WHERE EXISTS ( SELECT * FROM menuItems WHERE menuItems.itemId = orderedItems.itemId);",
+      function(err) {
+        if(err) {
+          reject("SQLite3 first update error: "+err);
+        // } else if(this.changes == 1) {
+          // resolve();
+        } else {
+          // reject("SQLite3 second update error: "+err);
+          resolve();
+        } // end else
+      } // end error
+    ); // end run
+  }); // end return
+} // end updateItemNames
 
 function getItemOrderHandler(request, response) {
   // Handling the inline GET request
