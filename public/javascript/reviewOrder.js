@@ -77,6 +77,7 @@ function makeOrderHandler(request, response, data) {
   // }); // end makePromise
   insertOrder(request, response, data)
     .then(() => updateItemNames(request, response, data))
+    .then(() => updateTotalPricePerItem(request, response, data))
     .then(() => {
       console.log("Updated items!");
       response.writeHead(301,
@@ -120,9 +121,26 @@ function updateItemNames(request, response, data) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
-    db.run("UPDATE orderedItems SET itemName = (SELECT menuItems.itemName FROM menuItems WHERE menuItems.itemId = orderedItems.itemId),"
-      + "unitPrice = (SELECT menuItems.unitPrice FROM menuItems WHERE menuItems.itemId = orderedItems.itemId)"
-      + "WHERE EXISTS ( SELECT * FROM menuItems WHERE menuItems.itemId = orderedItems.itemId);",
+    db.run("UPDATE orderedItems"
+      + " SET itemName ="
+      + "     ("
+      + "      SELECT menuItems.itemName"
+      + "      FROM menuItems"
+      + "      WHERE menuItems.itemId = orderedItems.itemId"
+      + "     ),"
+      + "     unitPrice ="
+      + "     ("
+      + "      SELECT menuItems.unitPrice"
+      + "      FROM menuItems"
+      + "      WHERE menuItems.itemId = orderedItems.itemId"
+      + "     )"
+      + " WHERE"
+      + "     EXISTS "
+      + "         ("
+      + "          SELECT *"
+      + "          FROM menuItems"
+      + "          WHERE menuItems.itemId = orderedItems.itemId"
+      + "         );",
       function(err) {
         if(err) {
           reject("SQLite3 first update error: "+err);
@@ -136,6 +154,29 @@ function updateItemNames(request, response, data) {
     ); // end run
   }); // end return
 } // end updateItemNames
+
+function updateTotalPricePerItem(request, response, data) {
+  return new Promise(function(resolve, reject) {
+    var db = require('./DBManager.js').getPool();
+
+    db.run("UPDATE orderedItems"
+      + " SET totalPricePerItem = CAST(unitPrice*quantity AS REAL);",
+    function(err) {
+      if(err) {
+        reject("SQLite3 individual price error: "+err);
+      } else {
+        resolve();
+      } // end else
+    }) // end error
+  }); // end return
+} // end updateOrderPrices
+
+function updateTotalPriceOfOrder(request, response, data) {
+  /* Follows the same logic as above basically. What you'll need to do is
+    select the orders based on the username and on the latest entry. Then,
+    sum the individual items based on these orders to find a total sum of
+    the entire order. */
+} // end uppdateTotalPriceOfOrder
 
 function getItemOrderHandler(request, response) {
   // Handling the inline GET request
