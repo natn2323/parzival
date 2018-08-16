@@ -42,6 +42,7 @@ module.exports = {
                 + 'totalPricePerItem REAL,'
                 + 'totalPriceOfOrder REAL,'
                 + 'username VARCHAR(255),'
+                + 'orderId VARCHAR(255),'
                 + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
                 + ');');
 
