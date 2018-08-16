@@ -80,16 +80,16 @@
 
 				// Create wrapper for submit button
 				let submit_div = document.createElement("div");
-				submit_div.id = "review-order-submit";
+				submit_div.id = "checkout-order-submit";
 
 				// Create submit button
-				let button = document.createElement("button");
-				button.type = "button";
-				button.onclick = submitClick;
-				button.innerText = "Confirm order";
+				let submit_input = document.createElement("input");
+				submit_input.type = "submit";
+				submit_input.value = "Confirm order";
 
 				// Appending
-				submit_div.appendChild(button);
+				// submit_div.appendChild(button);
+				submit_div.appendChild(submit_input);
 				frag.appendChild(submit_div);
 
 				// Append fragment to the form
@@ -98,48 +98,6 @@
 			} // end if
 		} // end onreadystatechange
 	}); // end eventlistener
-
-	function submitClick() {
-		let xhttp = new XMLHttpRequest(),
-				method = "POST",
-				url = "http://localhost:8124/checkout/confirm",
-				dataElements = document.getElementById('reviewOrder'),
-				labels = document.getElementsByTagName('label'),
-				itemName = '',
-				key = '',
-				quantity = 0,
-				dataToSubmit = {'content':[]};
-		for (let i = 0; i < labels.length; i++) {
-			if (labels[i].htmlFor !== '') {
-				itemName = labels[i].textContent;
-				key = labels[i].htmlFor;
-				quantity = dataElements.elements[key].value;
-				dataToSubmit['content'].push({
-					'item': itemName,
-					'quantity': quantity
-				});
-			} // end if
-		} // end for
-
-		xhttp.open(method, url, true);
-		xhttp.setRequestHeader('Content-Type', 'application/json');
-		xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		xhttp.send(JSON.stringify(dataToSubmit));
-
-		xhttp.onreadystatechange = function() {
-			if(xhttp.readyState === 4 && xhttp.status === 200) {
-				//Contains the redirection URL
-				if(xhttp.responseURL) {
-					// window.location.href does a GET request
-					window.location.href = xhttp.responseURL;
-				} else {
-					console.log("Nowhere to redirect to!");
-				}
-
-			} // end if
-		}; // end onreadystatechange
-
-	} // end submitClick
 	</script>
 </head>
 
@@ -151,7 +109,7 @@
 			<h1>Welcome to Bonnie's Vegan Cuisine<h1>
 		</div>
 
-		<form id="checkoutForm">
+		<form action="/checkout/submit" method="GET" id="checkoutForm">
 			<!-- Append checkout here! -->
 		</form>
 
