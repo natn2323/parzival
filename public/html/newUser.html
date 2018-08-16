@@ -86,21 +86,25 @@
 							header_th_createdAt = document.createElement("th"),
 							header_th_username = document.createElement("th"),
 							header_th_password = document.createElement("th");
+							header_th_authenticationToken = document.createElement("th");
 
 					header_th_createdAt.innerText = "Created At: ";
 					header_th_username.innerText = "Username: ";
 					header_th_password.innerText = "Password: ";
+					header_th_authenticationToken.innerText = "Authentication Token: ";
 
 					header_tr.appendChild(header_th_createdAt);
 					header_tr.appendChild(header_th_username);
 					header_tr.appendChild(header_th_password);
+					header_tr.appendChild(header_th_authenticationToken);
 					frag.appendChild(header_tr);
 
 					// Now we're populating
 					for (let i = 0; i < content.length; i++) {
 						let createdAt = content[i].createdAt,
 								username = content[i].username,
-								password = content[i].password;
+								password = content[i].password,
+								authenticationToken = content[i].authenticationToken;
 
 						let createdAt_td = document.createElement("td");
 						createdAt_td.innerText = createdAt;
@@ -111,12 +115,16 @@
 						let password_td = document.createElement("td");
 						password_td.innerText = password;
 
+						let authenticationToken_td = document.createElement("td");
+						authenticationToken_td.innerText = authenticationToken;
+
 						let row = document.createElement("tr");
 
 						// Appending
 						row.appendChild(createdAt_td);
 						row.appendChild(username_td);
 						row.appendChild(password_td);
+						row.appendChild(authenticationToken_td);
 						frag.appendChild(row);
 
 					} // end for
