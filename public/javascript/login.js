@@ -28,30 +28,22 @@ function GETHandler(request, response) {
 } // end GETHandler
 
 function POSTHandler(request, response, data) {
-  var validationPromise = validateLogin(data);
-  validationPromise.then(function(validated) {
-    if(validated) {
+  validateLogin(data)
+    .then(([user, pw]) => validateLoginWithDatabase(user, pw))
+    .then(username => createCookie(username))
+    .then(cookie => {
       console.log("Validated!");
       response.writeHead(301,
-        {Location: 'http://localhost:8124/menu'}
-      );
-      /* From documentation, after a "finish" event, no more events will be
-        emitted on the response object */
-      response.end();
-
-    } else {
-      /* Not validated, maybe do some frontend response or send to
-         loginError.html or the like */
-      response.writeHead(301,
-        {Location: 'http://localhost:8124/login'}
+        {
+          'Set-Cookie': cookie,
+          Location: 'http://localhost:8124/menu'
+        }
       );
       response.end();
-
-    }
-  }, function(err) {
-    console.log("Error on validationPromise: "+err);
-
-  }); // end validationPromise
+    })
+    .catch(err => {
+      console.log("Caught error: "+err);
+    }); // end promise chain
 } // end POSTHandler
 
 
@@ -59,21 +51,49 @@ function POSTHandler(request, response, data) {
  *************************** HELPER FUNCTIONS ***************************
  ************************************************************************/
 
+/* Username to be passed from validateLogin */
+function createCookie(username) {
+  return new Promise(function(resolve, reject) {
+    var db = require('./DBManager.js').getPool();
+    let cookie = "SomeDefaultCookie"; // want to create a function that does this
+
+    db.run("UPDATE loginInfo"
+      + " SET authenticationToken = $cookie"
+      + " WHERE username = $username",
+    {
+      $cookie: cookie,
+      $username: username
+    },
+    function(err) {
+      if(err) {
+        reject();
+
+      } else {
+        resolve(cookie);
+
+      } // end else
+    }); // end run
+  }); // end return
+} // end createCookie
+
 /* Quick validation of given info, then checking against database.
    Some validattion COULD be done from the browser as well, as to avoid
    making extraneous validations */
 function validateLogin(data) {
-  if(typeof data !== "undefined") {
-    if(data['username'] !== 'undefined' && data['password'] !== 'undefined') {
-      // 'let' has local scope
-      let username = data['username'],
-          password = data['password'];
-      var validated = validateLoginWithDatabase(username, password);
-      return validated;
+  return new Promise(function(resolve, reject) {
+    if(typeof data !== "undefined") {
+      if(data['username'] !== 'undefined' && data['password'] !== 'undefined') {
+        // 'let' has local scope
+        let username = data['username'],
+            password = data['password'];
+        // var validated = validateLoginWithDatabase(username, password);
+        console.log("Inside validateLogin: "+username+" and: "+password);
+        resolve([username, password]);
+      }
+    } else { // Fail to authenticate / data is lost(?)
+        reject();
     }
-  } else { // Fail to authenticate / data is lost(?)
-      return false;
-  }
+  }); // end return
 } // end validateLogin
 
 
@@ -98,14 +118,14 @@ function validateLoginWithDatabase(givenUsername, givenPassword) {
           console.log("Accessed!");
           console.log(rows[0]['username']);
           console.log(rows[0]['password']);
-          resolve(true);
+          resolve(givenUsername, givenPassword);
 
         } else if(rows.length === 0) { // Dealing with empty result sets
           // Do something when result set empty -- possibly return False
           console.log("No result!\n"
             + "Ergo, username and password don't check out!\n"
             + "Bad u: %s, p: %s\n", givenUsername, givenPassword);
-          resolve(false);
+          reject();
 
         }
     }); // end query
