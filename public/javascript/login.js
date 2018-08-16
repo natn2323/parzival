@@ -43,6 +43,10 @@ function POSTHandler(request, response, data) {
     })
     .catch(err => {
       console.log("Caught error: "+err);
+      response.writeHead(301,
+        {Location: 'http://localhost:8124/login'}
+      );
+      response.end();
     }); // end promise chain
 } // end POSTHandler
 
