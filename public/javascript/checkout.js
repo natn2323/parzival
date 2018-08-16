@@ -32,6 +32,10 @@ function GETHandler(request, response) {
     && path_arr[1] == "order") {
       getOrderHandler(request, response);
 
+  } else if(path_arr.length === 2
+    && path_arr[0] === "checkout"
+    && path_arr[1] === "submit") {
+      confirmOrderHandler(request, response);
   } // end else if
  } // end GETHandler
 
@@ -45,6 +49,24 @@ function GETHandler(request, response) {
  /************************************************************************
   *************************** HELPER FUNCTIONS ***************************
   ************************************************************************/
+
+function confirmOrderHandler(request, response) {
+
+}
+
+/* Based on username, which will be passed along in header, or in a cookie to
+   be associated with a username. */
+function insertOrderId() {
+
+}
+
+/* Want to check the necessary fields in the orderedItems table. You should
+   actually check that every column in the associated orderId or username
+   exists and is populated. */
+function checkOrderFields() {
+
+}
+
 
 function getOrderHandler(request, response) {
   // TODO: Handling the inline GET request
