@@ -39,12 +39,12 @@
 	</style>
 
 	<script>
-	
+
 		document.addEventListener('DOMContentLoaded', function() {
 			var xhttp = new XMLHttpRequest(),
 					method = "GET",
 					url = "http://localhost:8124/reviewOrder/order",
-					area = document.getElementById('reviewOrder');
+					area = document.getElementById('reviewForm');
 
 			// Do GET request here and parse data
 			xhttp.open(method, url, true);
@@ -102,7 +102,7 @@
 						let delete_button = document.createElement("button");
 
 						delete_button.onclick = () => {
-							let selector = document.getElementById("reviewOrder");
+							let selector = document.getElementById("reviewForm");
 							let currDiv = document.getElementById(`item_${i}`);
 							selector.removeChild(currDiv);
 						}
@@ -142,7 +142,7 @@
 			let xhttp = new XMLHttpRequest(),
 					method = "POST",
 					url = "http://localhost:8124/reviewOrder/makeOrder",
-					dataElements = document.getElementById('reviewOrder'),
+					dataElements = document.getElementById('reviewForm'),
 					labels = document.getElementsByTagName('label'),
 					itemName = '',
 					key = '',
@@ -191,7 +191,7 @@
 			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
 		</div>
 
-		<form id="reviewOrder">
+		<form id="reviewForm">
 			<!-- Appending entries here! -->
 		</form>
 
