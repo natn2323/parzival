@@ -24,15 +24,13 @@ module.exports = {
       ); // end run
     }); // end return
   }, // end createAuthentication
-  verifyAuthentication: function(username, cookie) {
+  authenticateUsernameAgainstCookie: function(cookie) {
     return new Promise(function(reject, resolve) {
       var db = require('./DBManager.js').getPool();
-      db.all("SELECT authenticationToken "
-        + "FROM loginInfo "
-        + "WHERE username=$username"
-        + "AND authenticationToken=$cookie",
+      db.all("SELECT username"
+        + " FROM loginInfo"
+        + " WHERE authenticationToken=$cookie;",
         {
-          $username: username,
           $cookie: cookie
         },
         function(err, rows) {
@@ -40,13 +38,14 @@ module.exports = {
             reject(err);
           } else if (rows.length===1) {
             console.log("Got a result! Verify!");
-            resolve(true);
+            console.log("Cookie row is: "+row[0]['authenticationToken']);
+            resolve();
           } else if (rows.length===0) {
             console.log("No result!");
-            reject(false);
+            reject();
           } else if (rows.length>0) {
             console.log("Multiple entries of a username and cookie!");
-            reject(false);
+            reject();
           }
         } // end callback
       ); // end run
