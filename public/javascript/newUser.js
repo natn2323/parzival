@@ -57,7 +57,8 @@ function getAllUsersHandler(requeust, response) {
         dataToSubmit['content'].push({
           'createdAt': unit.createdAt,
           'username': unit.username,
-          'password': unit.password
+          'password': unit.password,
+          'authenticationToken': unit.authenticationToken
         }); // end push
       } // end for
 
