@@ -56,25 +56,6 @@ function POSTHandler(request, response, data) {
  ************************************************************************/
 
 function makeOrderHandler(request, response, data) {
-  // let makePromise = insertOrder(request, response, data);
-  // makePromise.then(function(ordered) {
-  //   if(ordered) {
-  //     console.log("Reviewed order items!");
-  //     response.writeHead(301,
-  //       {Location: 'http://localhost:8124/checkout'}
-  //     );
-  //     response.end();
-  //
-  //   } else {
-  //     response.writeHead(200, {'Content-Type': 'text/html'});
-  //     response.write('<html><body>Something went wrong after reviewing!</body></html>');
-  //     response.end();
-  //
-  //   }
-  // }, function(err) {
-  //   console.log("Error on makePromise: "+err);
-  //
-  // }); // end makePromise
   insertOrder(request, response, data)
     .then(() => updateItemNames(request, response, data))
     .then(() => updateTotalPricePerItem(request, response, data))
