@@ -2,34 +2,35 @@
 
 module.exports = {
   createAuthentication: function(username) {
-    return new Promise(function(reject, resolve) {
+    return new Promise(function(resolve, reject) {
       var db = require('./DBManager.js').getPool();
-      let cookie = createCookie();
-      db.run("UPDATE loginInfo "
-        + "SET cookie=$cookie "
-        + "WHERE username=$username",
+      let cookie = "SomeDefaultCookie"; // TODO: create a function to do this
+
+      db.run("UPDATE loginInfo"
+        + " SET authenticationToken = $cookie"
+        + " WHERE username = $username;",
         {
           $cookie: cookie,
           $username: username
         },
         function(err) {
-          if(!err) {
-            /* Could do something with chainable Database object, i.e. verify
-               by doing a SELECT to see that the change has gone through. */
-            resolve(true);
-          } else {
+          if(err) {
             reject(err);
+
+          } else {
+            resolve(cookie);
+
           }
         } // end callback
       ); // end run
     }); // end return
   }, // end createAuthentication
-  authenticateUsernameAgainstCookie: function(cookie) {
-    return new Promise(function(reject, resolve) {
+  authenticateCookie: function(cookie) {
+    return new Promise(function(resolve, reject) {
       var db = require('./DBManager.js').getPool();
       db.all("SELECT username"
         + " FROM loginInfo"
-        + " WHERE authenticationToken=$cookie;",
+        + " WHERE authenticationToken = $cookie;",
         {
           $cookie: cookie
         },
@@ -38,22 +39,21 @@ module.exports = {
             reject(err);
           } else if (rows.length===1) {
             console.log("Got a result! Verify!");
-            console.log("Cookie row is: "+row[0]['authenticationToken']);
+            console.log("Cookie row is: "+rows[0]['authenticationToken']);
             resolve();
           } else if (rows.length===0) {
             console.log("No result!");
-            reject();
+            reject("No result!");
           } else if (rows.length>0) {
-            console.log("Multiple entries of a username and cookie!");
-            reject();
+            console.log("Multiple entries of a cookie! Impossible!");
+            reject("Multiple entries of a cookie! Impossible!");
           }
         } // end callback
       ); // end run
     }); // end return
-  } // end verifyAuthentication
-
+  } // end authenticateCookie
 } // end exports
 
-function createCookie() {
-  return true;
-} // end createCookie
+function cookieCutter() {
+
+} // end cookieCutter
