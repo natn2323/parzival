@@ -7,7 +7,7 @@ module.exports = {
     var requestBody = '';
 
     request.on('data', function(data) {
-        requestBody += data;
+      requestBody += data;
     }); // on data
 
     request.on('end', function() {
@@ -21,52 +21,54 @@ module.exports = {
         passed_data = qs.parse(requestBody);
       }
 
-      // /* Trying to do some smart URL assignments */
-      // var path = require('path');
-      // var parsed_path = path.parse(request.url);
-      // var filename = parsed_path['name']+'.js';
-      // var filepath = path.join(__dirname, filename);
-
       // An array representing the URL
       var url_split_path = require('url')
         .parse(request.url, true)
         .pathname
         .split('/')
         .slice(1, this.length);
-      // console.log("Original url is: "+url_split_path);
-
-      // // A dictionary-representation of the query string
-      // var url_query = require('url')
-      //   .parse(request.url, true)
-      //   .query; // this is more important in URL handlers
 
       /* Preventing direct access to /menu, etc. without first starting at
          login screen by checking the 'referer', i.e. the previous page.
          Might be an issue later when we have more pages linked together. */
-       let base = url_split_path[0],
-           file = "./" + base + ".js",
-           filepath = require('path').join(__dirname, file);
+      let base = url_split_path[0],
+        file = "./" + base + ".js",
+        filepath = require('path').join(__dirname, file);
 
-       if(base === "" ) { // This means you're accessing '/'
-         response.writeHead(301,
-           {Location: 'http://localhost:8124/login'}
-         );
-         response.end();
+      if(base === "" ) { // This means you're accessing '/'
+        response.writeHead(301,
+          {Location: 'http://localhost:8124/login'}
+        );
+        response.end();
 
-       } else if(base === "favicon.ico") {
-         console.log("Favicon requested!"); // Will eventually deal with this
-         response.writeHead(200);
-         response.end();
+      } else if(base === "favicon.ico") {
+        console.log("Favicon requested!"); // Will eventually deal with this
+        response.writeHead(200);
+        response.end();
 
-       } else if(require('fs').existsSync(filepath)) {
-         require(file).handle(request, response, passed_data);
+      } else if(require('fs').existsSync(filepath)
+        && base === "newUser") {
+        require('./newUser.js').handle(request, response, passed_data);
 
-       } else {
-         console.log("Bad URL: "+request.url);
-         response.writeHead(404);
-         response.end("<html><body>This page doesn't exist!</body></html>");
+      } else if(require('fs').existsSync(filepath)) {
+        let authenticator = require('./userAuthentication.js'),
+            cookie = request.headers['cookie'];
 
-       }
+        authenticator.authenticateCookie(cookie)
+          .then(() => require(file).handle(request, response, passed_data))
+          .catch(err => {
+            console.log(`Erroneous request: ${err} -- Redirect to login!`);
+            let login = require('./login.js');
+            login.handle(request, response, passed_data);
+
+          }); // end promise chain
+
+      } else {
+        console.log("Bad URL: "+request.url);
+        response.writeHead(404);
+        response.end("<html><body>This page doesn't exist!</body></html>");
+
+      }
     }) // on end
   } // end serve
 } // end of file
