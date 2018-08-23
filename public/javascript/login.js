@@ -5,6 +5,18 @@ module.exports = {
     console.log("Login.js entered!");
     if(request.method === "GET") GETHandler(request, response);
     else if(request.method === "POST") POSTHandler(request, response, data);
+  },
+  redirect: function(response) {
+    var fs = require('fs');
+    fs.readFile('./public/html/login.html', function(err, data) {
+      if(err) {
+        throw err;
+      } else {
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        response.write(data);
+        response.end();
+      }
+    });
   }
 }
 
@@ -28,14 +40,15 @@ function GETHandler(request, response) {
 } // end GETHandler
 
 function POSTHandler(request, response, data) {
+  let authenticator = require('./userAuthentication.js');
   validateLogin(data)
     .then(([user, pw]) => validateLoginWithDatabase(user, pw))
-    .then(username => createCookie(username))
+    .then(username => authenticator.createAuthentication(username))
     .then(cookie => {
       console.log("Validated!");
       response.writeHead(301,
         {
-          'Set-Cookie': cookie,
+          'Set-Cookie': cookie+'; expires='+new Date(new Date().getTime()+86409000).toUTCString(),
           Location: 'http://localhost:8124/menu'
         }
       );
@@ -55,31 +68,6 @@ function POSTHandler(request, response, data) {
  *************************** HELPER FUNCTIONS ***************************
  ************************************************************************/
 
-/* Username to be passed from validateLogin */
-function createCookie(username) {
-  return new Promise(function(resolve, reject) {
-    var db = require('./DBManager.js').getPool();
-    let cookie = "SomeDefaultCookie"; // want to create a function that does this
-
-    db.run("UPDATE loginInfo"
-      + " SET authenticationToken = $cookie"
-      + " WHERE username = $username",
-    {
-      $cookie: cookie,
-      $username: username
-    },
-    function(err) {
-      if(err) {
-        reject();
-
-      } else {
-        resolve(cookie);
-
-      } // end else
-    }); // end run
-  }); // end return
-} // end createCookie
-
 /* Quick validation of given info, then checking against database.
    Some validattion COULD be done from the browser as well, as to avoid
    making extraneous validations */
@@ -90,8 +78,7 @@ function validateLogin(data) {
         // 'let' has local scope
         let username = data['username'],
             password = data['password'];
-        // var validated = validateLoginWithDatabase(username, password);
-        console.log("Inside validateLogin: "+username+" and: "+password);
+
         resolve([username, password]);
       }
     } else { // Fail to authenticate / data is lost(?)
