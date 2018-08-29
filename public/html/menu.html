@@ -30,11 +30,40 @@
 		}
 		.rightContent {
 			background: lightblue;
-			width: 15%;
+			width: 14.95%; /* Prevent overlap of middle and right content */
 			float:right;
 		}
 		.centerContent, .leftContent, .rightContent {
 			height: 100vh;
+		}
+		form {
+			outline: 2px solid black;
+			width: 50%;
+			margin: auto;
+			padding: 1%;
+		}
+
+		/* The below selectors are unique for this page */
+		form > div :not(input) :not(.description-content) {
+			margin: 2%;
+			text-align: left;
+			margin-right: 5px;
+		}
+		form > div {
+			margin-right: 5px;
+			text-align: inherit;
+		}
+		div#menu-submit {
+			text-align: center;
+		}
+		.label-content {
+			padding-right: 5px;
+		}
+		.input-content {
+			float: right;
+		}
+		.description-content {
+			font-style: italic;
 		}
 	</style>
 
@@ -69,6 +98,18 @@
 						// Create div
 						let div = document.createElement("div");
 
+						// Create label for itemName
+						let label = document.createElement("label");
+						label.id = itemId;
+						label.htmlFor = itemName;
+						label.innerText = itemName;
+						label.setAttribute("class", "label-content");
+
+						// Create label for unitPrice
+						let price = document.createElement("span");
+						price.id = `price_${itemId}`;
+						price.innerText = '$' + unitPrice;
+
 						// Create input
 						let input = document.createElement("input");
 						input.type = "number";
@@ -77,28 +118,23 @@
 						input.setAttribute("oninput", "validity.valid||(value='');");
 						input.name = itemName;
 						input.value = 0;
-
-						// Create label for itemName
-						let label = document.createElement("label");
-						label.id = itemId;
-						label.htmlFor = itemName;
-						label.innerText = itemName;
-
-						// Create label for unitPrice
-						let price = document.createElement("span");
-						price.id = `price_${itemId}`;
-						price.innerText = '$' + unitPrice;
+						input.setAttribute("class", "input-content");
 
 						// Create label for itemDescription
 						let description = document.createElement("div");
 						description.id = `description_${i}`;
 						description.innerText = itemDescription;
+						description.setAttribute("class", "description-content");
+
+						// Add a line break in between each item
+						let linebreak = document.createElement("br");
 
 						// Appending
-						div.appendChild(input);
 						div.appendChild(label);
 						div.appendChild(price);
+						div.appendChild(input);
 						div.appendChild(description);
+						div.appendChild(linebreak);
 						frag.appendChild(div);
 
 					} // end for

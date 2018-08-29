@@ -30,11 +30,21 @@
 		}
 		.rightContent {
 			background: lightblue;
-			width: 15%;
+			width: 14.95%; /* Prevent overlap of middle and right content */
 			float:right;
 		}
 		.centerContent, .leftContent, .rightContent {
 			height: 100vh;
+		}
+		form {
+			outline: 2px solid black;
+			width: 50%;
+			margin: auto;
+			padding: 1%;
+		}
+		form > * {
+			margin: 2%;
+			text-align: center;
 		}
 	</style>
 	<!-- Create a script to get hostname instead of hardcoding localhost -->
@@ -59,15 +69,11 @@
 				<label for="password">Enter your password: </label>
 				<input type="text" name="password" id="password" required>
 			</div>
-			<div id="login-submit">
-				<input type="submit" value="Login">
+			<div class="button-region">
+				<input id="login" type="submit" value="Login">
+				<input id="register" type="button" value="Register" onclick="window.location.href='http://localhost:8124/newUser'">
 			</div>
 		</form>
-
-		<form class="register">
-			<input type="button" value="Register" onclick="window.location.href='http://localhost:8124/newUser'">
-		</form>
-
 	</div>
 
 	<div class="rightContent">
