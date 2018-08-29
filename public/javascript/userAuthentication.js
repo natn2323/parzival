@@ -4,7 +4,7 @@ module.exports = {
   createAuthentication: function(username) {
     return new Promise(function(resolve, reject) {
       var db = require('./DBManager.js').getPool();
-      let cookie = "SomeDefaultCookie"; // TODO: create a function to do this
+      let cookie = generateCookie("time");
 
       db.run("UPDATE loginInfo"
         + " SET authenticationToken = $cookie"
@@ -56,6 +56,10 @@ module.exports = {
   } // end authenticateCookie
 } // end exports
 
-function cookieCutter() {
+function generateCookie(criteria) {
+  let uuid = require('uuid');
 
-} // end cookieCutter
+  if(criteria)
+    if(criteria === "time") return uuid.v1();
+  else return uuid.v4();
+} // end generateCookie
