@@ -80,20 +80,25 @@ function insertOrder(request, response, data) {
       // TODO: Add unit price, item prices, and total order price
       // Don't need to re-add items
 
-      db.run("INSERT INTO orderedItems"
-        + " (itemId, quantity) VALUES"
-        + " ($itemId, $quantity);",
-      {
-        $itemId: unit.itemId,
-        $quantity: unit.quantity
-      },
-      function(err) {
-        if(err) {
-          reject("SQLite3 insert error: "+err);
-        } else {
-          resolve();
-        } // end else
-      }); // end run
+      if(parseInt(unit.quantity) <= 0
+        || parseInt(unit.itemId) <= 0) {
+        continue;
+      } else {
+        db.run("INSERT INTO orderedItems"
+          + " (itemId, quantity) VALUES"
+          + " ($itemId, $quantity);",
+        {
+          $itemId: unit.itemId,
+          $quantity: unit.quantity
+        },
+        function(err) {
+          if(err) {
+            reject("SQLite3 insert error: "+err);
+          } else {
+            resolve();
+          } // end else
+        }); // end run
+      } // end else
     } // end for
   }); // end return
 } // end makeOrder
@@ -153,11 +158,11 @@ function updateTotalPricePerItem(request, response, data) {
 } // end updateOrderPrices
 
 function updateTotalPriceOfOrder(request, response, data) {
-  /* Follows the same logic as above basically. What you'll need to do is
+  /* TODO: Follows the same logic as above basically. What you'll need to do is
     select the orders based on the username and on the latest entry. Then,
     sum the individual items based on these orders to find a total sum of
     the entire order. */
-} // end uppdateTotalPriceOfOrder
+} // end updateTotalPriceOfOrder
 
 function getItemOrderHandler(request, response) {
   // Handling the inline GET request

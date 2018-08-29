@@ -128,21 +128,27 @@ function processOrder(data) {
     for(let i = 0; i < data['content'].length; i++) {
       let unit = data['content'][i];
 
-      db.run("INSERT INTO reviewItems "
-        + "(itemId, quantity) VALUES"
-        + "($itemId, $quantity)",
-        {
-          $itemId: unit.itemId,
-          $quantity: unit.quantity
-        },
-        function(err) {
-          if(!err) {
-            // Could do some counting--if only I could get it to work
-          } else {
-            reject(err);
-          }
-        }
-      ); // end run
+    // backend validation
+    if(parseInt(unit.quantity) <= 0
+      || parseInt(unit.itemiD) <= 0) {
+        continue;
+      } else {
+        db.run("INSERT INTO reviewItems "
+          + "(itemId, quantity) VALUES"
+          + "($itemId, $quantity)",
+          {
+            $itemId: unit.itemId,
+            $quantity: unit.quantity
+          },
+          function(err) {
+            if(!err) {
+              // Could do some counting--if only I could get it to work
+            } else {
+              reject(err);
+            }
+          } // end callback
+        ); // end run
+      } // end else
 
     } // end for
     resolve(true);
