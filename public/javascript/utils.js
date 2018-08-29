@@ -1,5 +1,7 @@
 'use strict';
 
+var web_address;
+
 module.exports = {
    getSubPath: function(request) {
      // Returns an array representing the URL
@@ -13,5 +15,13 @@ module.exports = {
      // let base = url_split_path[0];
 
      return url_split_path;
-   } // end getSubtPath
+   }, // end getSubPath
+   address: function(passed_web_address) {
+     if(web_address) {
+       //pass
+     } else {
+       web_address = passed_web_address;
+     }
+     return web_address;
+   } // end address
 }

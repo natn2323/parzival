@@ -1,11 +1,11 @@
 'use strict'; // "strict" mode disallows some unsafe coding practices
 
 /* NPM modules */
-var http = require('http');
+const http = require('http');
 
 /* Additional server-side JavaScript modules */
-//var dispatcher = require('./public/javascript/dispatcher.js');
-var dispatcher = require('./public/javascript/dispatcher.js');
+const dispatcher = require('./public/javascript/dispatcher.js');
+const utils = require('./public/javascript/utils.js');
 
 /*
   Creating database or dataframe or whatever. Currently using sqlite3 and
@@ -16,9 +16,14 @@ require('./public/javascript/DBManager').getPool();
 /*
   Starting backend HTTP server
 */
-var serverPort = 8124;
+const serverPort = 8124;
+const hostname = 'localhost';
+const protocol = 'http';
+const webAddress = protocol + '://' + hostname + ':' + serverPort;
+utils.address(webAddress); // saving the web address; not currenty used
+
 http.createServer(function (request, response) {
   dispatcher.serve(request, response);
-}).listen(serverPort);
+}).listen(serverPort, hostname);
 
-console.log('Server running at localhost: '+serverPort);
+console.log(`Server running at ${hostname}: ${serverPort}`);

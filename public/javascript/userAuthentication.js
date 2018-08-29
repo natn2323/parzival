@@ -28,7 +28,7 @@ module.exports = {
   authenticateCookie: function(cookie) {
     return new Promise(function(resolve, reject) {
       var db = require('./DBManager.js').getPool();
-      db.all("SELECT username"
+      db.all("SELECT username, authenticationToken"
         + " FROM loginInfo"
         + " WHERE authenticationToken = $cookie;",
         {
@@ -38,8 +38,10 @@ module.exports = {
           if(err) {
             reject(err);
           } else if (rows.length===1) {
+            let username = rows[0]['username'],
+                cookie = rows[0]['authenticationToken'];
             console.log("Got a result! Verify!");
-            console.log("Cookie row is: "+rows[0]['authenticationToken']);
+            console.log(`U: ${username}, C: ${cookie}`);
             resolve();
           } else if (rows.length===0) {
             console.log("No result!");

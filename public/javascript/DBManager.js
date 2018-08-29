@@ -83,8 +83,10 @@ module.exports = {
  *************************************************************************/
 
 function getCSV() {
+  let menuFileLocation = './public/data/menuItems.tsv';
+
   return new Promise(function(resolve, reject) {
-    require('fs').readFile('C:/Users/nguyenn2345/Desktop/parzival/public/data/menuItems.tsv', "utf8", function(err, data) {
+    require('fs').readFile(menuFileLocation, "utf8", function(err, data) {
       if (err) {
         reject(err);
       } else {

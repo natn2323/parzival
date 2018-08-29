@@ -22,18 +22,12 @@ module.exports = {
       }
 
       // An array representing the URL
-      var url_split_path = require('url')
-        .parse(request.url, true)
-        .pathname
-        .split('/')
-        .slice(1, this.length);
-
-      /* Preventing direct access to /menu, etc. without first starting at
-         login screen by checking the 'referer', i.e. the previous page.
-         Might be an issue later when we have more pages linked together. */
-      let base = url_split_path[0],
-        file = "./" + base + ".js",
-        filepath = require('path').join(__dirname, file);
+      let url = require('url'),
+          req_url = url.parse(request.url, true),
+          url_split_path = req_url.pathname.split('/').slice(1, this.length),
+          base = url_split_path[0],
+          file = "./" + base + ".js",
+          filepath = require('path').join(__dirname, file);
 
       if(base === "" ) { // This means you're accessing '/'
         response.writeHead(301,
