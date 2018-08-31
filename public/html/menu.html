@@ -4,8 +4,58 @@
 <head>
 	<title>Menu Page</title>
 	<style>
-		body {
+		:root {
+			--center-column-width: 10%;
+		}
+		 body {
 			background: white;
+			margin: 0px;
+		}
+		.container3 {
+			width: 100%;
+			float: left;
+			background: lightblue;
+			overflow: hidden;
+			position: relative;
+		}
+		.container2 {
+			width: 100%;
+			float: left;
+			background: white;
+			position: relative;
+			right: 25%; /* imagine this as x */
+		}
+		.container1 {
+			width: 100%;
+			float: left;
+			background: lightblue;
+			position: relative;
+			right: 50%; /* imagine this as y; then x + y + (y-x) must equal 100% */
+		}
+		.leftContent {
+			float:left;
+			width: 25%; /* save as above comments */
+			position: relative;
+			left: 75%; /* this is 100% - ("right" of container2) */
+			overflow: hidden;
+		}
+		.centerContent {
+			float: left;
+			width: 50%;
+			position: relative;
+			left: 75%; /* this is 100% - ("right" of container2) */
+			overflow: hidden;
+			outline-style: solid;
+			outline-color: black;
+			outline-width: thin;
+			height: 100%;
+		}
+		.rightContent {
+			float: left;
+			width: 25%;
+			position: relative;
+			left: 75%; /* this is 100% - ("right" of container2) */
+			overflow: hidden;
 		}
 		.header {
 			background-color: #f1f1f1;
@@ -15,27 +65,6 @@
 			font-size: 35px;
 			border-bottom: 1px solid black;
 		}
-		.centerContent {
-			background:white;
-			width: 70%;
-			float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-			background: lightblue;
-			width: 15%;
-			float:left;
-		}
-		.rightContent {
-			background: lightblue;
-			width: 14.95%; /* Prevent overlap of middle and right content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-			height: 100vh;
-		}
 		form {
 			outline: 2px solid black;
 			width: 50%;
@@ -43,7 +72,9 @@
 			padding: 1%;
 		}
 
-		/* The below selectors are unique for this page */
+		/*
+		*	The below selectors are unique for this page; for the items on the form
+		*/
 		form > div :not(input) :not(.description-content) {
 			margin: 2%;
 			text-align: left;
@@ -107,7 +138,8 @@
 
 						// Create label for unitPrice
 						let price = document.createElement("span");
-						price.id = `price_${itemId}`;
+						// price.id = `price_${itemId}`; // str template incompatible in IE
+						price.id = "price_" + itemId;
 						price.innerText = '$' + unitPrice;
 
 						// Create input
@@ -122,7 +154,7 @@
 
 						// Create label for itemDescription
 						let description = document.createElement("div");
-						description.id = `description_${i}`;
+						description.id = "description_" + i;
 						description.innerText = itemDescription;
 						description.setAttribute("class", "description-content");
 
@@ -215,21 +247,27 @@
 
 
 <body>
-	<div class="leftContent">&nbsp;</div>
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
+				<div class="leftContent">&nbsp;</div>
 
-	<div class="centerContent">
-		<div class="header">
-			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+					</div>
+
+					<form id="menuForm">
+						<!-- Menu items to append here! -->
+					</form>
+
+				</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+			</div>
 		</div>
-
-		<form id="menuForm">
-			<!-- Menu items to append here! -->
-		</form>
-
-	</div>
-
-	<div class="rightContent">
-		&nbsp;
 	</div>
 </body>
 
