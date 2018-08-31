@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+* 1. order confirmation (success/failure message)
+* 2. order number
+*/
+
 module.exports = {
   handle: function(request, response) {
     console.log("Confirmation.js entered!");

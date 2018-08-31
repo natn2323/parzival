@@ -1,5 +1,11 @@
 'use strict';
 
+/*
+* 1. read-only list of their order
+* 2. personal info (name, etc. from authentication)
+* 3. submit order button
+*/
+
 module.exports = {
   handle: function(request, response, data) {
     console.log("Checkout.js entered!");
