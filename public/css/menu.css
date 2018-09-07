@@ -1,0 +1,68 @@
+html, body {
+ background: lightblue;
+ margin: 0px;
+ height: 100%;
+}
+.container3 {
+ width: 100%;
+ float: left;
+ background: lightblue;
+ overflow: hidden;
+ position: relative; /* necessary? */
+}
+.container2 {
+ width: 100%;
+ float: left;
+ background: white;
+ position: relative;
+ right: 25%; /* imagine this as x */
+}
+.container1 {
+ width: 100%;
+ float: left;
+ background: lightblue;
+ position: relative;
+ right: 50%; /* imagine this as y; then x + y + (y-x) must equal 100% */
+}
+.leftContent {
+ float:left;
+ width: 25%; /* save as above comments */
+ position: relative;
+ left: 75%; /* this is 100% - ("right" of container2) */
+ overflow: hidden;
+}
+.centerContent {
+ float: left;
+ width: 50%;
+ position: relative;
+ left: 75%; /* this is 100% - ("right" of container2) */
+ overflow: hidden;
+ outline-style: solid;
+ outline-color: black;
+ outline-width: thin;
+ height: 100%;
+ margin-bottom: 2px;
+}
+.rightContent {
+ float: left;
+ width: 25%;
+ position: relative;
+ left: 75%; /* this is 100% - ("right" of container2) */
+ overflow: hidden;
+}
+.header {
+ background-color: #f1f1f1;
+ max-width: 100%;
+ padding: 30px;
+ text-align: center;
+ font-size: 1.5vw; /* scaling header text */
+ border-bottom: 1px solid black;
+}
+form {
+ outline: 1px solid black;
+ width: 50%;
+ margin-left: auto;
+ margin-right: auto;
+ padding: 1%;
+ margin-bottom: 100px;
+}

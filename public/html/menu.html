@@ -3,91 +3,32 @@
 
 <head>
 	<title>Menu Page</title>
+	<link rel="stylesheet" href="../css/menu.css">
 	<style>
-		 html, body {
-			background: lightblue;
-			margin: 0px;
-			height: 100%;
+		/*
+		* Hide HTML5 Up and Down arrows.
+		*/
+		input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+		    -webkit-appearance: none;
+		    margin: 0;
 		}
-		.container3 {
-			width: 100%;
-			float: left;
-			background: lightblue;
-			overflow: hidden;
-			position: relative; /* necessary? */
-		}
-		.container2 {
-			width: 100%;
-			float: left;
-			background: white;
-			position: relative;
-			right: 25%; /* imagine this as x */
-		}
-		.container1 {
-			width: 100%;
-			float: left;
-			background: lightblue;
-			position: relative;
-			right: 50%; /* imagine this as y; then x + y + (y-x) must equal 100% */
-		}
-		.leftContent {
-			float:left;
-			width: 25%; /* save as above comments */
-			position: relative;
-			left: 75%; /* this is 100% - ("right" of container2) */
-			overflow: hidden;
-		}
-		.centerContent {
-			float: left;
-			width: 50%;
-			position: relative;
-			left: 75%; /* this is 100% - ("right" of container2) */
-			overflow: hidden;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-			height: 100%;
-			margin-bottom: 2px;
-		}
-		.rightContent {
-			float: left;
-			width: 25%;
-			position: relative;
-			left: 75%; /* this is 100% - ("right" of container2) */
-			overflow: hidden;
-		}
-		.header {
-			background-color: #f1f1f1;
-			max-width: 100%;
-			padding: 30px;
-			text-align: center;
-			font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		form {
-			outline: 2px solid black;
-			width: 50%;
-			margin-left: auto;
-			margin-right: auto;
-			padding: 1%;
-			margin-bottom: 100px;
-			/* margin-top: 100px; */
+		input[type="number"] {
+				-moz-appearance: textfield;
+
+				/* dealing with sizing width */
+				width: 20%;
+				min-width: 10%;
 		}
 
 		/*
 		*	The below selectors are unique for this page; for the items on the form
 		*/
-		form > div :not(input) :not(.description-content) {
-			margin: 2%;
-			text-align: left;
-			margin-right: 5px;
-		}
-		form > div {
-			margin-right: 5px;
-			text-align: inherit;
-		}
 		div#menu-submit {
 			text-align: center;
+		}
+		.item-div {
+			width: auto;
+			overflow: auto;
 		}
 		.label-content {
 			padding-right: 5px;
@@ -130,6 +71,7 @@
 
 						// Create div
 						let div = document.createElement("div");
+						div.setAttribute("class", "item-div");
 
 						// Create label for itemName
 						let label = document.createElement("label");
