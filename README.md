@@ -1,7 +1,7 @@
 # About this project
 
 The technology that this project currently uses are a Vanilla JavaScript frontend, a Node.js backend, with a SQLite3 in-memory database. 
-This project is still in development.
+This project is still in development. Development began on July 7th, 2018.
 
 
 # Our motivation
