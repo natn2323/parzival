@@ -41,6 +41,10 @@ module.exports = {
         response.end();
 
       } else if(require('fs').existsSync(filepath)
+        && base === "images") {
+        require('./images.js').handle(request, response, passed_data);
+
+      } else if(require('fs').existsSync(filepath)
         && base === "css") {
         require('./css.js').handle(request, response, passed_data);
 

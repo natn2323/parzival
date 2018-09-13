@@ -157,6 +157,8 @@ function updateTotalPricePerItem(request, response, data) {
   }); // end return
 } // end updateOrderPrices
 
+// TODO: Use this: update test set price = (select cast((price * 100) as int) / 100.0);
+// in order to truncate all values who go beyond the hundredths place
 function updateTotalPriceOfOrder(request, response, data) {
   /* TODO: Follows the same logic as above basically. What you'll need to do is
     select the orders based on the username and on the latest entry. Then,
@@ -199,7 +201,11 @@ function getItemOrder(username) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
-    db.all('SELECT menuItems.itemId, menuItems.itemName, menuItems.unitPrice, reviewItems.quantity'
+    db.all('SELECT'
+      + '   menuItems.itemId,'
+      + '   menuItems.itemName,'
+      + '   menuItems.unitPrice,'
+      + '   reviewItems.quantity'
       + ' FROM menuItems'
       + ' INNER JOIN reviewItems'
       + ' ON menuItems.itemId = reviewItems.itemId',
