@@ -3,39 +3,10 @@
 
 <head>
 	<title>New User Registration</title>
+	<link rel="stylesheet" href="../css/layout.css">
+	<link rel="stylesheet" href="../css/newUser.css">
+
 	<style>
-		body {
-			background: white;
-		}
-		.header {
-			background-color: #f1f1f1;
-			max-width: 100%;
-			padding: 30px;
-			text-align: center;
-			font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		.centerContent {
-			background:white;
-			width: 70%;
-			float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-			background: lightblue;
-			width: 15%;
-			float:left;
-		}
-		.rightContent {
-			background: lightblue;
-			width: 14.95%; /* preventing overlap with center content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-			height: 100vh;
-		}
 		#show-users {
 			overflow: hidden;
 			text-align: left;
@@ -141,44 +112,53 @@
 
 
 <body>
-	<div class="leftContent">&nbsp;</div>
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
 
-	<div class="centerContent">
-		<div class="header">
-			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+				<div class="leftContent">
+					&nbsp;
+				</div>
+
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+					</div>
+
+					<form action="/newUser" method="POST" class="newUser">
+						<div>
+							<label for="username">Enter your username: </label>
+							<input type="text" name="username" required>
+						</div>
+						<div>
+							<label for="password">Enter your password: </label>
+							<input type="text" name="password" required>
+						</div>
+						<div>
+							<label for="confirm_password">Re-enter your password: </label>
+							<input type="text" name="confirm_password"required>
+						</div>
+						<div id="button-region">
+							<input type="submit" value="Create New User">
+							<input type="button" value="Get All Users" onclick="getLoginInfo()">
+						</div>
+					</form>
+
+					<table id="show-users">
+						<!-- Populate this table! -->
+					</table>
+
+				</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+
+			</div>
 		</div>
-
-		<form action="/newUser" method="POST" class="newUser">
-			<div>
-				<label for="username">Enter your username: </label>
-				<input type="text" name="username" required>
-			</div>
-			<div>
-				<label for="password">Enter your password: </label>
-				<input type="text" name="password" required>
-			</div>
-			<div>
-				<label for="confirm_password">Re-enter your password: </label>
-				<input type="text" name="confirm_password"required>
-			</div>
-			<div id="new-user-submit">
-				<input type="submit" value="NewUser">
-			</div>
-		</form>
-
-		<button type="button" onclick="getLoginInfo()">
-			Get All Users
-		</button>
-
-		<table id="show-users">
-			<!-- Populate this table! -->
-		</table>
-
 	</div>
 
-	<div class="rightContent">
-		&nbsp;
-	</div>
+	<footer></footer>
 
 </body>
 

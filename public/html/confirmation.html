@@ -3,64 +3,34 @@
 
 <head>
 	<title>Confirmation Page</title>
-	<style>
-		body {
-    	background: white;
-		}
-		.header {
-	    background-color: #f1f1f1;
-			max-width: 100%;
-	    padding: 30px;
-	    text-align: center;
-	    font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		.centerContent {
-	    background:white;
-	    width: 70%;
-	    float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-	    background: lightblue;
-	    width: 15%;
-	    float:left;
-		}
-		.rightContent {
-	    background: lightblue;
-	    width: 14.95%; /* Prevent overlap of middle and right content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-	    height: 100vh;
-		}
-	</style>
+	<link rel="stylesheet" href="/../css/layout.css">
+	<link rel="stylesheet" href="/../css/confirmation.css">
 </head>
 
 
 <body>
-	<form action="/login" method="POST" class="login">
-		<div class="leftContent">&nbsp;</div>
-		<div class="centerContent">
-			<div class="header">
-				<h1>Welcome to Bonnie's Vegan Cuisine<h1>
-			</div>
-			<div id="username">
-				<label for="username">Enter your username: </label>
-				<input type="text" name="username" id="username" required>
-			</div>
-			<div id="password">
-				<label for="password">Enter your password: </label>
-				<input type="text" name="password" id="password" required>
-			</div>
-			<div id="login-submit">
-				<input type="submit" value="Login">
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
+
+				<div class="leftContent">
+					&nbsp;
+				</div>
+
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine<h1>
+					</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+
 			</div>
 		</div>
-		<div class="rightContent">&nbsp;</div>
-	</form>
+	</div>
+
+	<footer></footer>
 </body>
 
 

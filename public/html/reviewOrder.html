@@ -3,40 +3,8 @@
 
 <head>
 	<title>Review Order Page</title>
-	<style>
-		body {
-    	background: white;
-		}
-		.header {
-	    background-color: #f1f1f1;
-			max-width: 100%;
-	    padding: 30px;
-	    text-align: center;
-	    font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		.centerContent {
-	    background:white;
-	    width: 70%;
-	    float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-	    background: lightblue;
-	    width: 15%;
-	    float:left;
-		}
-		.rightContent {
-	    background: lightblue;
-	    width: 14.95%; /* Prevent overlap of middle and right content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-	    height: 100vh;
-		}
-	</style>
+	<link rel="stylesheet" href="../css/layout.css">
+	<link rel="stylesheet" href="../css/reviewOrder.css">
 
 	<script>
 
@@ -68,51 +36,82 @@
 
 						// Create div
 						let div = document.createElement("div");
-						div.id = `item_${i}`;
-						div.setAttribute('class', 'menu-item');
-
-						// Create input
-						let input = document.createElement("input");
-						input.type = "number";
-						input.min = 0;
-						input.name = itemName;
-						input.value = quantity;
+						div.id = "item_" + i;
+						div.setAttribute("class", "item-div");
 
 						// Create label for itemName
 						let label = document.createElement("label");
 						label.id = itemId;
 						label.htmlFor = itemName;
 						label.innerText = itemName;
+						label.setAttribute("class", "label-content");
+
+						// Create wrapper for inputs to float right
+						let inner_wrapper = document.createElement("span");
+
+						// Create input
+						let input = document.createElement("input");
+						input.name = itemName;
+						input.type = "number";
+						input.min = 0;
+						input.value = quantity;
+						input.setAttribute("class", "input-content");
+
+						// Client-side verification of input
+						input.setAttribute("oninput", "validity.valid||(value='');");
 
 						// Create label for unitPrice
 						let price = document.createElement("span");
-						price.id = `price_${itemId}`;
-						price.innerText = '$' + unitPrice;
+						price.id = "price_" + itemId;
+						price.innerText = "x $" + unitPrice + " = ";
 
 						// Create label for total that we'll be populating
 						let quantityMultipliedPrice = document.createElement("span");
-						quantityMultipliedPrice.id = `quantityMultipliedPrice_${itemId}`;
-						quantityMultipliedPrice.innerText = '$' + unitPrice*input.value;
+						quantityMultipliedPrice.id = "quantityMultipliedPrice_" + itemId;
+
+						// Appending zeroes to prettify
+						let prettifyUnitPrice = (unitPrice*input.value).toString(),
+								periodPos = prettifyUnitPrice.indexOf('.');
+
+						if (periodPos === -1) {
+							prettifyUnitPrice += ".00";
+						} else if (prettifyUnitPrice.length - periodPos < 3) {
+							prettifyUnitPrice += "0";
+						}
+
+						quantityMultipliedPrice.innerText = "$" + prettifyUnitPrice;
 
 						input.onchange = () => {
-							quantityMultipliedPrice.innerText= '$' + unitPrice*input.value;
+							quantityMultipliedPrice.innerText= "$" + unitPrice*input.value;
 						}
 
 						// Create "delete" button
 						let delete_button = document.createElement("button");
+						delete_button.setAttribute("class", "delete");
 
 						delete_button.onclick = () => {
 							let selector = document.getElementById("reviewForm");
-							let currDiv = document.getElementById(`item_${i}`);
+							let currDiv = document.getElementById("item_" + i);
 							selector.removeChild(currDiv);
 						}
 
+						// Create image for delete delete
+						let x_image = document.createElement("img");
+						x_image.src = "/images/delete_button.png";
+						x_image.width = 15;
+						x_image.height = 15;
+
 						// Appending
-						div.appendChild(input);
+						delete_button.appendChild(x_image);
+
+						inner_wrapper.appendChild(delete_button);
+						inner_wrapper.appendChild(quantityMultipliedPrice);
+						inner_wrapper.appendChild(price);
+						inner_wrapper.appendChild(input);
+
 						div.appendChild(label);
-						div.appendChild(price);
-						div.appendChild(quantityMultipliedPrice);
-						div.appendChild(delete_button);
+						div.appendChild(inner_wrapper);
+
 						frag.appendChild(div);
 
 					} // end for
@@ -184,22 +183,34 @@
 
 
 <body>
-	<div class="leftContent">&nbsp;</div>
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
 
-	<div class="centerContent">
-		<div class="header">
-			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+				<div class="leftContent">
+					&nbsp;
+				</div>
+
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+					</div>
+
+					<form id="reviewForm">
+						<!-- Appending entries here! -->
+					</form>
+
+				</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+
+			</div>
 		</div>
-
-		<form id="reviewForm">
-			<!-- Appending entries here! -->
-		</form>
-
 	</div>
 
-	<div class="rightContent">
-		&nbsp;
-	</div>
+	<footer></footer>
 </body>
 
 
