@@ -156,15 +156,6 @@ function updateTotalPricePerItem(request, response, data) {
   }); // end return
 } // end updateOrderPrices
 
-// TODO: Use this: update test set price = (select cast((price * 100) as int) / 100.0);
-// in order to truncate all values who go beyond the hundredths place
-function updateTotalPriceOfOrder(request, response, data) {
-  /* TODO: Follows the same logic as above basically. What you'll need to do is
-    select the orders based on the username and on the latest entry. Then,
-    sum the individual items based on these orders to find a total sum of
-    the entire order. */
-} // end updateTotalPriceOfOrder
-
 function getItemOrderHandler(request, response) {
   // Handling the inline GET request
   if(request.headers['x-requested-with'] &&
