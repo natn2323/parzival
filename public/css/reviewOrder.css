@@ -24,19 +24,29 @@ input[type="number"] {
 /*
 *	The below selectors are unique for this page; for the items on the form
 */
-div#menu-submit {
+div#review-order-submit {
   text-align: center;
 }
 .item-div {
   width: auto;
   overflow: auto;
+  margin-bottom: 10px;
 }
 .label-content {
-  padding-right: 5px;
+  padding-right: 10px;
+  float: left;
 }
-.input-content {
+form > div > span > * {
   float: right;
+  padding-right: 3px;
 }
-.description-content {
-  font-style: italic;
+button.delete {
+  padding: 0px;
+  border: 0px;
+  background: transparent;
+  cursor: pointer;
+}
+button.delete > img {
+  background-color: red;
+  border-radius: 50%;
 }

@@ -8,26 +8,12 @@ form {
 }
 
 /*
-* Hide HTML5 Up and Down arrows.
-*/
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type="number"] {
-    -moz-appearance: textfield;
-
-    /* dealing with sizing width */
-    width: 20%;
-}
-
-/*
 *	The below selectors are unique for this page; for the items on the form
 */
-div#menu-submit {
+div#checkout-order-submit {
   text-align: center;
 }
-.item-div {
+/* .item-div {
   width: auto;
   overflow: auto;
 }
@@ -39,4 +25,4 @@ div#menu-submit {
 }
 .description-content {
   font-style: italic;
-}
+} */

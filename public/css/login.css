@@ -1,0 +1,17 @@
+form {
+ outline: 1px solid black;
+ width: 65%;
+ margin-left: auto;
+ margin-right: auto;
+ margin-bottom: 100px;
+ padding: 1%;
+ text-align: center;
+}
+input[type="text"] {
+  /* dealing with sizing width */
+  width: 50%;
+  text-align: center;
+}
+form > div {
+  padding-bottom: 15px;
+}
