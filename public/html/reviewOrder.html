@@ -70,7 +70,9 @@
 						quantityMultipliedPrice.id = "quantityMultipliedPrice_" + itemId;
 
 						// Appending zeroes to prettify
-						let prettifyUnitPrice = (unitPrice*input.value).toString(),
+						let prettifyUnitPrice = (unitPrice*input.value)
+																		.toFixed(2)
+																		.toString(),
 								periodPos = prettifyUnitPrice.indexOf('.');
 
 						if (periodPos === -1) {
@@ -82,7 +84,9 @@
 						quantityMultipliedPrice.innerText = "$" + prettifyUnitPrice;
 
 						input.onchange = () => {
-							quantityMultipliedPrice.innerText= "$" + unitPrice*input.value;
+							quantityMultipliedPrice.innerText = "$" + (unitPrice*input.value)
+																												.toFixed(2)
+																												.toString();
 						}
 
 						// Create "delete" button

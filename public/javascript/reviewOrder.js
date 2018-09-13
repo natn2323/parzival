@@ -8,7 +8,6 @@ module.exports = {
   }
 }
 
-
 /*************************************************************************
  *************************** PRIVATE FUNCTIONS ***************************
  *************************************************************************/
@@ -146,7 +145,7 @@ function updateTotalPricePerItem(request, response, data) {
     var db = require('./DBManager.js').getPool();
 
     db.run("UPDATE orderedItems"
-      + " SET totalPricePerItem = CAST(unitPrice*quantity AS REAL);",
+      + " SET totalPricePerItem = (SELECT round(unitPrice*quantity, 2));",
     function(err) {
       if(err) {
         reject("SQLite3 individual price error: "+err);
