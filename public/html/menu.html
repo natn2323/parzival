@@ -49,7 +49,7 @@
 						let price = document.createElement("span");
 						// price.id = `price_${itemId}`; // str template incompatible in IE
 						price.id = "price_" + itemId;
-						price.innerText = '$' + unitPrice;
+						price.innerText = "$" + unitPrice;
 
 						// Create input
 						let input = document.createElement("input");
@@ -108,9 +108,9 @@
 					dataElements = document.getElementById('menuForm'),
 					labels = document.getElementsByTagName('label'),
 					itemId = 0,
-					key = '',
+					key = "",
 					quantity = 0,
-					dataToSubmit = {'content':[]};
+					dataToSubmit = {"content":[]};
 			for (let i = 0; i < labels.length; i++) {
 				if (labels[i].htmlFor !== '') {
 					itemId = labels[i].id;
@@ -123,9 +123,9 @@
 						continue;
 
 					} else {
-						dataToSubmit['content'].push({
-							'itemId': itemId,
-							'quantity': quantity
+						dataToSubmit["content"].push({
+							"itemId": itemId,
+							"quantity": quantity
 						});
 
 					} // end else
