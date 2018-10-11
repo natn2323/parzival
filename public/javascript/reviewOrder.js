@@ -74,6 +74,11 @@ function insertOrder(request, response, data) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
+    let cookie = "";
+    if(request.headers && request.headers['cookie']) {
+      cookie = request.headers['cookie'];
+    }
+
     for(let i = 0; i < data['content'].length; i++) {
       let unit = data['content'][i];
       // TODO: Add unit price, item prices, and total order price
@@ -84,11 +89,12 @@ function insertOrder(request, response, data) {
         continue;
       } else {
         db.run("INSERT INTO orderedItems"
-          + " (itemId, quantity) VALUES"
-          + " ($itemId, $quantity);",
+          + " (itemId, quantity, cookie) VALUES"
+          + " ($itemId, $quantity, $cookie);",
         {
           $itemId: unit.itemId,
-          $quantity: unit.quantity
+          $quantity: unit.quantity,
+          $cookie: cookie
         },
         function(err) {
           if(err) {
@@ -161,10 +167,12 @@ function getItemOrderHandler(request, response) {
   if(request.headers['x-requested-with'] &&
       request.headers['x-requested-with'] === 'XMLHttpRequest') {
 
-    // GET-ing the page involves orders based on menu page selections
-    let username = require('./DBManager.js').getCurrentUsernameAndPassword()[0];
+    let cookie = "";
+    if(request.headers && request.headers['cookie']) {
+      cookie = request.headers['cookie'];
+    }
 
-    let reviewPromise = getItemOrder(username); // username is being hardcoded
+    let reviewPromise = getItemOrder(cookie);
     reviewPromise.then(function(rows) {
       // Parsing data
       let dataToSubmit = {'content': []}
@@ -187,7 +195,7 @@ function getItemOrderHandler(request, response) {
   } // end if
 } // end getItemOrderHandler
 
-function getItemOrder(username) {
+function getItemOrder(cookie) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
@@ -198,7 +206,11 @@ function getItemOrder(username) {
       + '   reviewItems.quantity'
       + ' FROM menuItems'
       + ' INNER JOIN reviewItems'
-      + ' ON menuItems.itemId = reviewItems.itemId',
+      + ' ON menuItems.itemId = reviewItems.itemId'
+      + ' AND reviewItems.cookie = $cookie',
+      {
+        $cookie: cookie
+      },
       function(err, rows) {
         if(err) {
           reject(err);

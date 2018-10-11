@@ -100,7 +100,13 @@ function POSTHandler(request, response, data) {
  } // end getMenuItems
 
 function processOrderHandler(request, response, data) {
-  var orderPromise = processOrder(data);
+  let cookie = "";
+  if(request.headers && request.headers['cookie']) {
+    cookie = request.headers['cookie'];
+  }
+
+  // TODO: Handle no cookie case? Or it's already handled at the dispatcher.js level
+  var orderPromise = processOrder(cookie, data); 
   orderPromise.then(function(ordered) {
     if(ordered) {
       console.log("Menu items ordered!");
@@ -121,24 +127,25 @@ function processOrderHandler(request, response, data) {
   }); // end orderPromise
 } // end processOrderHandler
 
-function processOrder(data) {
+function processOrder(cookie, data) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
     for(let i = 0; i < data['content'].length; i++) {
       let unit = data['content'][i];
 
-    // backend validation
-    if(parseInt(unit.quantity) <= 0
-      || parseInt(unit.itemiD) <= 0) {
-        continue;
+      // backend validation
+      if(parseInt(unit.quantity) <= 0
+        || parseInt(unit.itemiD) <= 0) {
+          continue;
       } else {
         db.run("INSERT INTO reviewItems "
-          + "(itemId, quantity) VALUES"
-          + "($itemId, $quantity)",
+          + "(itemId, quantity, cookie) VALUES"
+          + "($itemId, $quantity, $cookie)",
           {
             $itemId: unit.itemId,
-            $quantity: unit.quantity
+            $quantity: unit.quantity,
+            $cookie: cookie
           },
           function(err) {
             if(!err) {

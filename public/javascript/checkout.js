@@ -110,7 +110,12 @@ function getOrderHandler(request, response) {
   if(request.headers['x-requested-with'] &&
       request.headers['x-requested-with'] === 'XMLHttpRequest') {
 
-    let checkoutPromise = getOrder();
+    let cookie = "";
+    if(request.headers && request.headers['cookie']) {
+      cookie = request.headers['cookie'];
+    }
+
+    let checkoutPromise = getOrder(cookie);
     checkoutPromise.then(function(rows) {
       // Parsing data
       let dataToSubmit = {'content': []};
@@ -133,11 +138,24 @@ function getOrderHandler(request, response) {
 
 // TODO: select items based on cookie received from reviewOrder page
 //  and
-function getOrder() {
+function getOrder(cookie) {
   return new Promise(function(resolve, reject) {
       var db = require('./DBManager.js').getPool();
       // TODO: Should be getting specific order
-      db.all('SELECT * FROM orderedItems',
+      db.all('SELECT'
+        + '   orderedItems.itemName,'
+        + '   orderedItems.quantity'
+        + ' FROM orderedItems'
+        + ' WHERE orderedItems.timeOrdered = '
+        + '   ('
+        + '   SELECT '
+        + '     MAX(orderedItems.timeOrdered)'
+        + '   FROM orderedItems'
+        + '   WHERE orderedItems.cookie = $cookie'
+        + '   );',
+        {
+          $cookie: cookie
+        },
         function(err, rows) {
           if(err) {
             reject(err);
