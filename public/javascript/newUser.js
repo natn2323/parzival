@@ -33,6 +33,10 @@ function GETHandler(request, response) {
     && path_arr[1] === "check") {
     getAllUsersHandler(request, response);
 
+  } else if (path_arr.length > 1
+    && path_arr[0] === "newUser"
+    && path_arr[1] === "orders") {
+    getAllOrderedItemsHandler(request, response);
   } // end else if
 } // end function
 
@@ -87,7 +91,55 @@ function getAllUsers() {
         }
     }); // end query
   }); // end return
-}
+} // end getAllUsers
+
+function getAllOrderedItemsHandler(request, response) {
+  let printOrdersPromise = getAllOrderedItems();
+  printOrdersPromise.then(function(rows) {
+    if(rows) {
+      console.log("All orders retrieved!");
+      // Parsing data
+      let dataToSubmit = {'content': []};
+      for(let i = 0; i < rows.length; i++) {
+        let unit = rows[i];
+        dataToSubmit['content'].push({
+          'itemId': unit.itemId,
+          'itemName': unit.itemName,
+          'unitPrice': unit.unitPrice,
+          'quantity': unit.quantity,
+          'totalPricePerItem': unit.totalPricePerItem,
+          'cookie': unit.cookie,
+          'orderId': unit.orderId,
+          'timeOrdered': unit.timeOrdered
+        }); // end push
+      } // end for
+
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify(dataToSubmit));
+
+    } // end if
+  }); // end promise
+} // end getAllOrderedItemsHandler
+
+function getAllOrderedItems() {
+  return new Promise(function(resolve, reject) {
+      let db = require('./DBManager.js').getPool();
+
+      db.all("SELECT * FROM orderedItems",
+        function(err, rows) {
+          if(err) {
+            reject(err);
+
+          } else if (rows.length>0) {
+            resolve(rows);
+
+          } else if (rows.length===0) {
+            resolve(false);
+
+          }
+      }); // end query
+  }); // end return
+} // end getAllOrderedItems
 
 function createNewUserHandler(request, response, data) {
   let username = data.username,

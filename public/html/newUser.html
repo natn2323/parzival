@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="../css/newUser.css">
 
 	<style>
-		#show-users {
+		#show-users, #show-orders {
 			overflow: hidden;
 			text-align: left;
 			display: none;
@@ -17,7 +17,7 @@
 			padding-left: 3%;
 			padding-right: 3%;
 		}
-		#show-users, th, td {
+		#show-users, #show-orders, th, td {
 			border: 1px solid black;
 			width: 100%;
 		}
@@ -107,6 +107,138 @@
 			} // end onreadystatechange
 		} // end getLoginInfo
 
+		function getAllOrderedItems() {
+			let xhttp = new XMLHttpRequest(),
+					method = "GET",
+					url = "http://localhost:8124/newUser/orders/",
+					table = document.getElementById("show-orders");
+
+			if(table.innerHTML !== "") {
+				table.innerHTML = "";
+				table.style.display = "block";
+			}
+
+			xhttp.open(method, url, true);
+			xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+			xhttp.send();
+
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200) {
+					console.log("Showing all orders on client-side!");
+
+					// Now you've got the data
+					let response = JSON.parse(xhttp.responseText),
+							content = response['content'],
+							frag = document.createDocumentFragment();
+
+					// Adding table headers
+					let header_tr = document.createElement("tr"),
+							header_th_itemId = document.createElement("th"),
+							header_th_itemName = document.createElement("th"),
+							header_th_unitPrice = document.createElement("th"),
+							header_th_quantity = document.createElement("th"),
+							header_th_totalPricePerItem = document.createElement("th"),
+							header_th_cookie = document.createElement("th"),
+							header_th_orderId = document.createElement("th"),
+							header_th_timeOrdered = document.createElement("th");
+							headers = [
+								header_th_itemId,
+								header_th_itemName,
+								header_th_unitPrice,
+								header_th_quantity,
+								header_th_totalPricePerItem,
+								header_th_cookie,
+								header_th_orderId,
+								header_th_timeOrdered
+							];
+
+					header_th_itemId.innerText = "itemId: ";
+					header_th_itemName.innerText = "itemName: ";
+					header_th_unitPrice.innerText = "unitPrice: ";
+					header_th_quantity.innerText = "quantity: ";
+					header_th_totalPricePerItem.innerText = "totalPricePerItem: ";
+					header_th_cookie.innerText = "cookie: ";
+					header_th_orderId.innerText = "orderId: ";
+					header_th_timeOrdered.innerText = "timeOrdered: ";
+
+					for(let header of headers) {
+						header_tr.appendChild(header);
+					}
+
+					header_tr.appendChild(header_th_itemId);
+					header_tr.appendChild(header_th_itemName);
+					header_tr.appendChild(header_th_unitPrice);
+					header_tr.appendChild(header_th_quantity);
+					header_tr.appendChild(header_th_totalPricePerItem);
+					header_tr.appendChild(header_th_cookie);
+					header_tr.appendChild(header_th_orderId);
+					header_tr.appendChild(header_th_timeOrdered);
+					frag.appendChild(header_tr);
+
+					// Now we're populating
+					for (let i = 0; i < content.length; i++) {
+						let itemId = content[i].itemId,
+								itemName = content[i].itemName,
+								unitPrice = content[i].unitPrice,
+								quantity = content[i].quantity,
+								totalPricePerItem = content[i].totalPricePerItem,
+								cookie = content[i].cookie,
+								orderId = content[i].orderId,
+								timeOrdered = content[i].timeOrdered;
+
+						let itemId_td = document.createElement("td");
+						itemId_td.innerText = itemId;
+
+						let itemName_td = document.createElement("td");
+						itemName_td.innerText = itemName
+
+						let unitPrice_td = document.createElement("td");
+						unitPrice_td.innerText = unitPrice;
+
+						let quantity_td = document.createElement("td");
+						quantity_td.innerText = quantity;
+
+						let totalPricePerItem_td = document.createElement("td");
+						totalPricePerItem_td.innerText = totalPricePerItem;
+
+						let cookie_td = document.createElement("td");
+						cookie_td.innerText = cookie;
+
+						let orderId_td = document.createElement("td");
+						orderId_td.innerText = orderId;
+
+						let timeOrdered_td = document.createElement("td");
+						timeOrdered_td.innerText = timeOrdered;
+
+						let row = document.createElement("tr");
+
+						// for(let value of Object.keys(content[i])) {
+						// 	let element = document.createElement("td"),
+						// 			element.innerText = value;
+						//
+						// 	row.appendChild(document.element);
+						// }
+
+						// Appending
+						row.appendChild(itemId_td);
+						row.appendChild(itemName_td);
+						row.appendChild(unitPrice_td);
+						row.appendChild(quantity_td);
+						row.appendChild(totalPricePerItem_td);
+						row.appendChild(cookie_td);
+						row.appendChild(orderId_td);
+						row.appendChild(timeOrdered_td);
+						frag.appendChild(row);
+
+					} // end for
+
+					// Appending frag
+					table.appendChild(frag);
+
+				} // end if
+			} // end onreadystatechange
+		} // end getLoginInfo
+
 	</script>
 </head>
 
@@ -141,11 +273,18 @@
 						<div id="button-region">
 							<input type="submit" value="Create New User">
 							<input type="button" value="Get All Users" onclick="getLoginInfo()">
+							<input type="button" value="Get All Orders" onclick="getAllOrderedItems()">
 						</div>
 					</form>
 
 					<table id="show-users">
 						<!-- Populate this table! -->
+					</table>
+
+					<br>
+					
+					<table id="show-orders">
+						<!-- Populate this table too! -->
 					</table>
 
 				</div>
