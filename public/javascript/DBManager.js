@@ -35,7 +35,7 @@ module.exports = {
           .run('CREATE TABLE reviewItems ('
                 + 'itemId INTEGER,'
                 + 'quantity INTEGER,'
-                + 'username VARCHAR(255)'
+                + 'cookie VARCHAR(255)'  // Same as authentication token above
                 + ');')
           .run('CREATE TABLE orderedItems ('
                 + 'itemId INTEGER,'
@@ -43,7 +43,7 @@ module.exports = {
                 + 'unitPrice REAL,'
                 + 'quantity INTEGER,'
                 + 'totalPricePerItem REAL,'
-                + 'username VARCHAR(255),'
+                + 'cookie VARCHAR(255),' // Same as authentication token above
                 + 'orderId INTEGER,'
                 + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
                 + ');')
