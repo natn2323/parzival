@@ -2,6 +2,7 @@
 
 /* NPM modules */
 const http = require('http');
+const config = require('./config.json');
 
 /* Additional server-side JavaScript modules */
 const dispatcher = require('./public/javascript/dispatcher.js');
@@ -16,9 +17,9 @@ require('./public/javascript/DBManager').getPool();
 /*
   Starting backend HTTP server
 */
-const serverPort = 8124;
-const hostname = 'localhost';
-const protocol = 'http';
+const serverPort = config.server_port;
+const hostname = config.hostname;
+const protocol = config.protocol;
 const webAddress = protocol + '://' + hostname + ':' + serverPort;
 utils.address(webAddress); // saving the web address; not currenty used
 

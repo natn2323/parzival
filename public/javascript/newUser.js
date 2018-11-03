@@ -145,7 +145,8 @@ function createNewUserHandler(request, response, data) {
   let username = data.username,
       password = data.password,
       precheck = "pre",
-      postcheck = "post";
+      postcheck = "post",
+      config = require('../../config.json');
 
   /* Check that the login doesn't exist, create it, verify, then redirect */
   checkUserExists(username, precheck)
@@ -153,7 +154,7 @@ function createNewUserHandler(request, response, data) {
     .then(() => checkUserExists(username, postcheck))
     .then(() => {
       response.writeHead(301,
-        {Location: 'http://localhost:8124/login'}
+        {Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/login'}
       );
       response.end();
     })
@@ -162,7 +163,7 @@ function createNewUserHandler(request, response, data) {
     .catch(err => {
       console.log("Caught error: "+err);
       response.writeHead(301,
-        {Location: 'http://localhost:8124/newUser'}
+        {Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/newUser'}
       );
       response.end();
     }); // end promise chain

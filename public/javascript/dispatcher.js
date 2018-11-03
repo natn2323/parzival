@@ -4,15 +4,15 @@
 	 other modules */
 module.exports = {
   serve: function(request, response) {
-    var requestBody = '';
+    var requestBody = '',
+        passed_data,
+        config = require('../../config.json');
 
     request.on('data', function(data) {
       requestBody += data;
     }); // on data
 
     request.on('end', function() {
-      var passed_data;
-
       /* Parse data based on content-type */
       if(request.headers['content-type'] === 'application/json') {
         passed_data = JSON.parse(requestBody);
@@ -30,8 +30,9 @@ module.exports = {
           filepath = require('path').join(__dirname, file);
 
       if(base === "" ) { // This means you're accessing '/'
+        let config = require('../../config.json');
         response.writeHead(301,
-          {Location: 'http://localhost:8124/login'}
+          {Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/login'}
         );
         response.end();
 

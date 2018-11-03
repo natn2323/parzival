@@ -40,7 +40,9 @@ function GETHandler(request, response) {
 } // end GETHandler
 
 function POSTHandler(request, response, data) {
-  let authenticator = require('./userAuthentication.js');
+  let authenticator = require('./userAuthentication.js'),
+      config = require('../../config.json');
+      
   validateLogin(data)
     .then(([user, pw]) => validateLoginWithDatabase(user, pw))
     .then(username => authenticator.createAuthentication(username))
@@ -49,7 +51,7 @@ function POSTHandler(request, response, data) {
       response.writeHead(301,
         {
           'Set-Cookie': cookie+'; expires='+new Date(new Date().getTime()+86409000).toUTCString(),
-          Location: 'http://localhost:8124/menu'
+          Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/menu'
         }
       );
       response.end();
@@ -57,7 +59,7 @@ function POSTHandler(request, response, data) {
     .catch(err => {
       console.log("Caught error: "+err);
       response.writeHead(301,
-        {Location: 'http://localhost:8124/login'}
+        {Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/menu'}
       );
       response.end();
     }); // end promise chain

@@ -100,18 +100,21 @@ function POSTHandler(request, response, data) {
  } // end getMenuItems
 
 function processOrderHandler(request, response, data) {
-  let cookie = "";
+  let cookie = "",
+      config = require('../../config.json');
+      
   if(request.headers && request.headers['cookie']) {
     cookie = request.headers['cookie'];
   }
 
   // TODO: Handle no cookie case? Or it's already handled at the dispatcher.js level
-  var orderPromise = processOrder(cookie, data); 
+  var orderPromise = processOrder(cookie, data);
   orderPromise.then(function(ordered) {
     if(ordered) {
       console.log("Menu items ordered!");
+
       response.writeHead(301,
-        {Location: 'http://localhost:8124/reviewOrder'}
+        {Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/reviewOrder'}
       );
       response.end();
 

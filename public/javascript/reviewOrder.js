@@ -55,13 +55,15 @@ function POSTHandler(request, response, data) {
  ************************************************************************/
 
 function makeOrderHandler(request, response, data) {
+  let config = require('../../config.json');
+  
   insertOrder(request, response, data)
     .then(() => updateItemNames(request, response, data))
     .then(() => updateTotalPricePerItem(request, response, data))
     .then(() => {
       console.log("Updated items!");
       response.writeHead(301,
-        {Location: 'http://localhost:8124/checkout'}
+        {Location: config.protocol+'://'+config.hostname+':'+config.server_port+'/checkout'}
       );
       response.end();
     })
