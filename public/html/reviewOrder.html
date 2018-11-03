@@ -11,7 +11,8 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			var xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/reviewOrder/order",
+					//url = "http://localhost:8124/reviewOrder/order",
+					url = "http://104.248.118.69/reviewOrder/order",
 					area = document.getElementById('reviewForm');
 
 			// Do GET request here and parse data
@@ -144,7 +145,8 @@
 		function submitClick() {
 			let xhttp = new XMLHttpRequest(),
 					method = "POST",
-					url = "http://localhost:8124/reviewOrder/makeOrder",
+					//url = "http://localhost:8124/reviewOrder/makeOrder",
+					url = "http://104.248.118.69/reviewOrder/makeOrder",
 					dataElements = document.getElementById('reviewForm'),
 					labels = document.getElementsByTagName('label'),
 					itemName = '',

@@ -11,7 +11,8 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			let xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/menu/items/",
+					//url = "http://localhost:8124/menu/items/",
+					url = "http://104.248.118.69/menu/items/",
 					area = document.getElementById('menuForm');
 
 			xhttp.open(method, url, true);
@@ -104,7 +105,8 @@
 		function submitClick() {
 			let xhttp = new XMLHttpRequest(),
 				  method = "POST",
-					url = "http://localhost:8124/menu/order",
+					//url = "http://localhost:8124/menu/order",
+					url = "http://104.248.118.69/menu/order",
 					dataElements = document.getElementById('menuForm'),
 					labels = document.getElementsByTagName('label'),
 					itemId = 0,

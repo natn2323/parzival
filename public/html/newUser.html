@@ -31,7 +31,8 @@
 		function getLoginInfo() {
 			let xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/newUser/check/",
+					//url = "http://localhost:8124/newUser/check/",
+					url = "http://104.248.118.69/newUser/check/",
 					table = document.getElementById("show-users");
 
 			if(table.innerHTML !== "") {
@@ -110,7 +111,8 @@
 		function getAllOrderedItems() {
 			let xhttp = new XMLHttpRequest(),
 					method = "GET",
-					url = "http://localhost:8124/newUser/orders/",
+					//url = "http://localhost:8124/newUser/orders/",
+					url = "http://104.248.118.69/newUser/orders/",
 					table = document.getElementById("show-orders");
 
 			if(table.innerHTML !== "") {
@@ -282,7 +284,7 @@
 					</table>
 
 					<br>
-					
+
 					<table id="show-orders">
 						<!-- Populate this table too! -->
 					</table>
