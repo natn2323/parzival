@@ -8,7 +8,6 @@ module.exports = {
   }
 }
 
-
 /*************************************************************************
  *************************** PRIVATE FUNCTIONS ***************************
  *************************************************************************/
@@ -75,25 +74,36 @@ function insertOrder(request, response, data) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
+    let cookie = "";
+    if(request.headers && request.headers['cookie']) {
+      cookie = request.headers['cookie'];
+    }
+
     for(let i = 0; i < data['content'].length; i++) {
       let unit = data['content'][i];
       // TODO: Add unit price, item prices, and total order price
       // Don't need to re-add items
 
-      db.run("INSERT INTO orderedItems"
-        + " (itemId, quantity) VALUES"
-        + " ($itemId, $quantity);",
-      {
-        $itemId: unit.itemId,
-        $quantity: unit.quantity
-      },
-      function(err) {
-        if(err) {
-          reject("SQLite3 insert error: "+err);
-        } else {
-          resolve();
-        } // end else
-      }); // end run
+      if(parseInt(unit.quantity) <= 0
+        || parseInt(unit.itemId) <= 0) {
+        continue;
+      } else {
+        db.run("INSERT INTO orderedItems"
+          + " (itemId, quantity, cookie) VALUES"
+          + " ($itemId, $quantity, $cookie);",
+        {
+          $itemId: unit.itemId,
+          $quantity: unit.quantity,
+          $cookie: cookie
+        },
+        function(err) {
+          if(err) {
+            reject("SQLite3 insert error: "+err);
+          } else {
+            resolve();
+          } // end else
+        }); // end run
+      } // end else
     } // end for
   }); // end return
 } // end makeOrder
@@ -141,7 +151,7 @@ function updateTotalPricePerItem(request, response, data) {
     var db = require('./DBManager.js').getPool();
 
     db.run("UPDATE orderedItems"
-      + " SET totalPricePerItem = CAST(unitPrice*quantity AS REAL);",
+      + " SET totalPricePerItem = (SELECT round(unitPrice*quantity, 2));",
     function(err) {
       if(err) {
         reject("SQLite3 individual price error: "+err);
@@ -152,22 +162,17 @@ function updateTotalPricePerItem(request, response, data) {
   }); // end return
 } // end updateOrderPrices
 
-function updateTotalPriceOfOrder(request, response, data) {
-  /* Follows the same logic as above basically. What you'll need to do is
-    select the orders based on the username and on the latest entry. Then,
-    sum the individual items based on these orders to find a total sum of
-    the entire order. */
-} // end uppdateTotalPriceOfOrder
-
 function getItemOrderHandler(request, response) {
   // Handling the inline GET request
   if(request.headers['x-requested-with'] &&
       request.headers['x-requested-with'] === 'XMLHttpRequest') {
 
-    // GET-ing the page involves orders based on menu page selections
-    let username = require('./DBManager.js').getCurrentUsernameAndPassword()[0];
+    let cookie = "";
+    if(request.headers && request.headers['cookie']) {
+      cookie = request.headers['cookie'];
+    }
 
-    let reviewPromise = getItemOrder(username); // username is being hardcoded
+    let reviewPromise = getItemOrder(cookie);
     reviewPromise.then(function(rows) {
       // Parsing data
       let dataToSubmit = {'content': []}
@@ -190,14 +195,22 @@ function getItemOrderHandler(request, response) {
   } // end if
 } // end getItemOrderHandler
 
-function getItemOrder(username) {
+function getItemOrder(cookie) {
   return new Promise(function(resolve, reject) {
     var db = require('./DBManager.js').getPool();
 
-    db.all('SELECT menuItems.itemId, menuItems.itemName, menuItems.unitPrice, reviewItems.quantity'
+    db.all('SELECT'
+      + '   menuItems.itemId,'
+      + '   menuItems.itemName,'
+      + '   menuItems.unitPrice,'
+      + '   reviewItems.quantity'
       + ' FROM menuItems'
       + ' INNER JOIN reviewItems'
-      + ' ON menuItems.itemId = reviewItems.itemId',
+      + ' ON menuItems.itemId = reviewItems.itemId'
+      + ' AND reviewItems.cookie = $cookie',
+      {
+        $cookie: cookie
+      },
       function(err, rows) {
         if(err) {
           reject(err);

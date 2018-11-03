@@ -3,40 +3,11 @@
 
 <head>
 	<title>New User Registration</title>
+	<link rel="stylesheet" href="../css/layout.css">
+	<link rel="stylesheet" href="../css/newUser.css">
+
 	<style>
-		body {
-			background: white;
-		}
-		.header {
-			background-color: #f1f1f1;
-			max-width: 100%;
-			padding: 30px;
-			text-align: center;
-			font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		.centerContent {
-			background:white;
-			width: 70%;
-			float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-			background: lightblue;
-			width: 15%;
-			float:left;
-		}
-		.rightContent {
-			background: lightblue;
-			width: 14.95%; /* preventing overlap with center content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-			height: 100vh;
-		}
-		#show-users {
+		#show-users, #show-orders {
 			overflow: hidden;
 			text-align: left;
 			display: none;
@@ -46,7 +17,7 @@
 			padding-left: 3%;
 			padding-right: 3%;
 		}
-		#show-users, th, td {
+		#show-users, #show-orders, th, td {
 			border: 1px solid black;
 			width: 100%;
 		}
@@ -136,49 +107,197 @@
 			} // end onreadystatechange
 		} // end getLoginInfo
 
+		function getAllOrderedItems() {
+			let xhttp = new XMLHttpRequest(),
+					method = "GET",
+					url = "http://localhost:8124/newUser/orders/",
+					table = document.getElementById("show-orders");
+
+			if(table.innerHTML !== "") {
+				table.innerHTML = "";
+				table.style.display = "block";
+			}
+
+			xhttp.open(method, url, true);
+			xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+			xhttp.send();
+
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200) {
+					console.log("Showing all orders on client-side!");
+
+					// Now you've got the data
+					let response = JSON.parse(xhttp.responseText),
+							content = response['content'],
+							frag = document.createDocumentFragment();
+
+					// Adding table headers
+					let header_tr = document.createElement("tr"),
+							header_th_itemId = document.createElement("th"),
+							header_th_itemName = document.createElement("th"),
+							header_th_unitPrice = document.createElement("th"),
+							header_th_quantity = document.createElement("th"),
+							header_th_totalPricePerItem = document.createElement("th"),
+							header_th_cookie = document.createElement("th"),
+							header_th_orderId = document.createElement("th"),
+							header_th_timeOrdered = document.createElement("th");
+							headers = [
+								header_th_itemId,
+								header_th_itemName,
+								header_th_unitPrice,
+								header_th_quantity,
+								header_th_totalPricePerItem,
+								header_th_cookie,
+								header_th_orderId,
+								header_th_timeOrdered
+							];
+
+					header_th_itemId.innerText = "itemId: ";
+					header_th_itemName.innerText = "itemName: ";
+					header_th_unitPrice.innerText = "unitPrice: ";
+					header_th_quantity.innerText = "quantity: ";
+					header_th_totalPricePerItem.innerText = "totalPricePerItem: ";
+					header_th_cookie.innerText = "cookie: ";
+					header_th_orderId.innerText = "orderId: ";
+					header_th_timeOrdered.innerText = "timeOrdered: ";
+
+					for(let header of headers) {
+						header_tr.appendChild(header);
+					}
+
+					header_tr.appendChild(header_th_itemId);
+					header_tr.appendChild(header_th_itemName);
+					header_tr.appendChild(header_th_unitPrice);
+					header_tr.appendChild(header_th_quantity);
+					header_tr.appendChild(header_th_totalPricePerItem);
+					header_tr.appendChild(header_th_cookie);
+					header_tr.appendChild(header_th_orderId);
+					header_tr.appendChild(header_th_timeOrdered);
+					frag.appendChild(header_tr);
+
+					// Now we're populating
+					for (let i = 0; i < content.length; i++) {
+						let itemId = content[i].itemId,
+								itemName = content[i].itemName,
+								unitPrice = content[i].unitPrice,
+								quantity = content[i].quantity,
+								totalPricePerItem = content[i].totalPricePerItem,
+								cookie = content[i].cookie,
+								orderId = content[i].orderId,
+								timeOrdered = content[i].timeOrdered;
+
+						let itemId_td = document.createElement("td");
+						itemId_td.innerText = itemId;
+
+						let itemName_td = document.createElement("td");
+						itemName_td.innerText = itemName
+
+						let unitPrice_td = document.createElement("td");
+						unitPrice_td.innerText = unitPrice;
+
+						let quantity_td = document.createElement("td");
+						quantity_td.innerText = quantity;
+
+						let totalPricePerItem_td = document.createElement("td");
+						totalPricePerItem_td.innerText = totalPricePerItem;
+
+						let cookie_td = document.createElement("td");
+						cookie_td.innerText = cookie;
+
+						let orderId_td = document.createElement("td");
+						orderId_td.innerText = orderId;
+
+						let timeOrdered_td = document.createElement("td");
+						timeOrdered_td.innerText = timeOrdered;
+
+						let row = document.createElement("tr");
+
+						// for(let value of Object.keys(content[i])) {
+						// 	let element = document.createElement("td"),
+						// 			element.innerText = value;
+						//
+						// 	row.appendChild(document.element);
+						// }
+
+						// Appending
+						row.appendChild(itemId_td);
+						row.appendChild(itemName_td);
+						row.appendChild(unitPrice_td);
+						row.appendChild(quantity_td);
+						row.appendChild(totalPricePerItem_td);
+						row.appendChild(cookie_td);
+						row.appendChild(orderId_td);
+						row.appendChild(timeOrdered_td);
+						frag.appendChild(row);
+
+					} // end for
+
+					// Appending frag
+					table.appendChild(frag);
+
+				} // end if
+			} // end onreadystatechange
+		} // end getLoginInfo
+
 	</script>
 </head>
 
 
 <body>
-	<div class="leftContent">&nbsp;</div>
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
 
-	<div class="centerContent">
-		<div class="header">
-			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+				<div class="leftContent">
+					&nbsp;
+				</div>
+
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+					</div>
+
+					<form action="/newUser" method="POST" class="newUser">
+						<div>
+							<label for="username">Enter your username: </label>
+							<input type="text" name="username" required>
+						</div>
+						<div>
+							<label for="password">Enter your password: </label>
+							<input type="text" name="password" required>
+						</div>
+						<div>
+							<label for="confirm_password">Re-enter your password: </label>
+							<input type="text" name="confirm_password"required>
+						</div>
+						<div id="button-region">
+							<input type="submit" value="Create New User">
+							<input type="button" value="Get All Users" onclick="getLoginInfo()">
+							<input type="button" value="Get All Orders" onclick="getAllOrderedItems()">
+						</div>
+					</form>
+
+					<table id="show-users">
+						<!-- Populate this table! -->
+					</table>
+
+					<br>
+					
+					<table id="show-orders">
+						<!-- Populate this table too! -->
+					</table>
+
+				</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+
+			</div>
 		</div>
-
-		<form action="/newUser" method="POST" class="newUser">
-			<div>
-				<label for="username">Enter your username: </label>
-				<input type="text" name="username" required>
-			</div>
-			<div>
-				<label for="password">Enter your password: </label>
-				<input type="text" name="password" required>
-			</div>
-			<div>
-				<label for="confirm_password">Re-enter your password: </label>
-				<input type="text" name="confirm_password"required>
-			</div>
-			<div id="new-user-submit">
-				<input type="submit" value="NewUser">
-			</div>
-		</form>
-
-		<button type="button" onclick="getLoginInfo()">
-			Get All Users
-		</button>
-
-		<table id="show-users">
-			<!-- Populate this table! -->
-		</table>
-
 	</div>
 
-	<div class="rightContent">
-		&nbsp;
-	</div>
+	<footer></footer>
 
 </body>
 

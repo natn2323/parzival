@@ -3,82 +3,54 @@
 
 <head>
 	<title>Login Page</title>
-	<style>
-		body {
-			background: white;
-		}
-		.header {
-			background-color: #f1f1f1;
-			max-width: 100%;
-			padding: 30px;
-			text-align: center;
-			font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		.centerContent {
-			background:white;
-			width: 70%;
-			float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-			background: lightblue;
-			width: 15%;
-			float:left;
-		}
-		.rightContent {
-			background: lightblue;
-			width: 14.95%; /* Prevent overlap of middle and right content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-			height: 100vh;
-		}
-		form {
-			outline: 2px solid black;
-			width: 50%;
-			margin: auto;
-			padding: 1%;
-		}
-		form > * {
-			margin: 2%;
-			text-align: center;
-		}
-	</style>
+	<link rel="stylesheet" href="../css/layout.css">
+	<link rel="stylesheet" href="../css/login.css">
+
 	<!-- Create a script to get hostname instead of hardcoding localhost -->
 	<!-- You can use window.location.hostname -->
 </head>
 
 
 <body>
-	<div class="leftContent">&nbsp;</div>
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
 
-	<div class="centerContent">
-		<div class="header">
-			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+				<div class="leftContent">
+					&nbsp;
+				</div>
+
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+					</div>
+
+					<form action="/login" method="POST" class="login">
+						<div id="username">
+							<label for="username">Enter your username: </label>
+							<input type="text" name="username" id="username" required>
+						</div>
+						<div id="password">
+							<label for="password">Enter your password: </label>
+							<input type="text" name="password" id="password" required>
+						</div>
+						<div class="button-region">
+							<input id="login" type="submit" value="Login">
+							<input id="register" type="button" value="Register" onclick="location.assign('http://localhost:8124/newUser')">
+						</div>
+					</form>
+
+				</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+
+			</div>
 		</div>
-
-		<form action="/login" method="POST" class="login">
-			<div id="username">
-				<label for="username">Enter your username: </label>
-				<input type="text" name="username" id="username" required>
-			</div>
-			<div id="password">
-				<label for="password">Enter your password: </label>
-				<input type="text" name="password" id="password" required>
-			</div>
-			<div class="button-region">
-				<input id="login" type="submit" value="Login">
-				<input id="register" type="button" value="Register" onclick="window.location.href='http://localhost:8124/newUser'">
-			</div>
-		</form>
 	</div>
 
-	<div class="rightContent">
-		&nbsp;
-	</div>
+	<footer></footer>
 </body>
 
 

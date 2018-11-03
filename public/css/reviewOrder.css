@@ -1,0 +1,52 @@
+form {
+ outline: 1px solid black;
+ width: 65%;
+ margin-left: auto;
+ margin-right: auto;
+ margin-bottom: 100px;
+ padding: 1%;
+}
+
+/*
+* Hide HTML5 Up and Down arrows.
+*/
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+
+    /* dealing with sizing width */
+    width: 20%;
+}
+
+/*
+*	The below selectors are unique for this page; for the items on the form
+*/
+div#review-order-submit {
+  text-align: center;
+}
+.item-div {
+  width: auto;
+  overflow: auto;
+  margin-bottom: 10px;
+}
+.label-content {
+  padding-right: 10px;
+  float: left;
+}
+form > div > span > * {
+  float: right;
+  padding-right: 3px;
+}
+button.delete {
+  padding: 0px;
+  border: 0px;
+  background: transparent;
+  cursor: pointer;
+}
+button.delete > img {
+  background-color: red;
+  border-radius: 50%;
+}

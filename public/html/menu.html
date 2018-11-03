@@ -3,69 +3,8 @@
 
 <head>
 	<title>Menu Page</title>
-	<style>
-		body {
-			background: white;
-		}
-		.header {
-			background-color: #f1f1f1;
-			max-width: 100%;
-			padding: 30px;
-			text-align: center;
-			font-size: 35px;
-			border-bottom: 1px solid black;
-		}
-		.centerContent {
-			background:white;
-			width: 70%;
-			float:left;
-			outline-style: solid;
-			outline-color: black;
-			outline-width: thin;
-		}
-		.leftContent {
-			background: lightblue;
-			width: 15%;
-			float:left;
-		}
-		.rightContent {
-			background: lightblue;
-			width: 14.95%; /* Prevent overlap of middle and right content */
-			float:right;
-		}
-		.centerContent, .leftContent, .rightContent {
-			height: 100vh;
-		}
-		form {
-			outline: 2px solid black;
-			width: 50%;
-			margin: auto;
-			padding: 1%;
-		}
-
-		/* The below selectors are unique for this page */
-		form > div :not(input) :not(.description-content) {
-			margin: 2%;
-			text-align: left;
-			margin-right: 5px;
-		}
-		form > div {
-			margin-right: 5px;
-			text-align: inherit;
-		}
-		div#menu-submit {
-			text-align: center;
-		}
-		.label-content {
-			padding-right: 5px;
-		}
-		.input-content {
-			float: right;
-		}
-		.description-content {
-			font-style: italic;
-		}
-	</style>
+	<link rel="stylesheet" href="../css/layout.css">
+	<link rel="stylesheet" href="../css/menu.css">
 
 	<script>
 
@@ -97,6 +36,7 @@
 
 						// Create div
 						let div = document.createElement("div");
+						div.setAttribute("class", "item-div");
 
 						// Create label for itemName
 						let label = document.createElement("label");
@@ -107,8 +47,9 @@
 
 						// Create label for unitPrice
 						let price = document.createElement("span");
-						price.id = `price_${itemId}`;
-						price.innerText = '$' + unitPrice;
+						// price.id = `price_${itemId}`; // str template incompatible in IE
+						price.id = "price_" + itemId;
+						price.innerText = "$" + unitPrice;
 
 						// Create input
 						let input = document.createElement("input");
@@ -122,7 +63,7 @@
 
 						// Create label for itemDescription
 						let description = document.createElement("div");
-						description.id = `description_${i}`;
+						description.id = "description_" + i;
 						description.innerText = itemDescription;
 						description.setAttribute("class", "description-content");
 
@@ -167,9 +108,9 @@
 					dataElements = document.getElementById('menuForm'),
 					labels = document.getElementsByTagName('label'),
 					itemId = 0,
-					key = '',
+					key = "",
 					quantity = 0,
-					dataToSubmit = {'content':[]};
+					dataToSubmit = {"content":[]};
 			for (let i = 0; i < labels.length; i++) {
 				if (labels[i].htmlFor !== '') {
 					itemId = labels[i].id;
@@ -182,9 +123,9 @@
 						continue;
 
 					} else {
-						dataToSubmit['content'].push({
-							'itemId': itemId,
-							'quantity': quantity
+						dataToSubmit["content"].push({
+							"itemId": itemId,
+							"quantity": quantity
 						});
 
 					} // end else
@@ -215,22 +156,34 @@
 
 
 <body>
-	<div class="leftContent">&nbsp;</div>
+	<div class="container3">
+		<div class="container2">
+			<div class="container1">
 
-	<div class="centerContent">
-		<div class="header">
-			<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+				<div class="leftContent">
+					&nbsp;
+				</div>
+
+				<div class="centerContent">
+					<div class="header">
+						<h1>Welcome to Bonnie's Vegan Cuisine</h1>
+					</div>
+
+					<form id="menuForm">
+						<!-- Menu items to append here! -->
+					</form>
+
+				</div>
+
+				<div class="rightContent">
+					&nbsp;
+				</div>
+
+			</div>
 		</div>
-
-		<form id="menuForm">
-			<!-- Menu items to append here! -->
-		</form>
-
 	</div>
 
-	<div class="rightContent">
-		&nbsp;
-	</div>
+	<footer></footer>
 </body>
 
 

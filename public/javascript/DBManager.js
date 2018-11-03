@@ -18,10 +18,13 @@ module.exports = {
     csvPromise.then(function(result) {
       pool = db.serialize(function() {
         db.run('CREATE TABLE loginInfo ('
-                + 'authenticationToken VARCHAR(255),'
+                + 'authenticationToken VARCHAR(255),' // This is the cookie
+                + 'expiredTokens VARCHAR(255),'
                 + 'createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,'
                 + 'username VARCHAR(255),'
-                + 'password VARCHAR(255)'
+                + 'password VARCHAR(255),'
+                + 'activeOrders VARCHAR(255),'
+                + 'pastOrders VARCHAR(255)'
                 + ');')
           .run('CREATE TABLE menuItems ('
                 + 'itemId INTEGER,'
@@ -32,7 +35,7 @@ module.exports = {
           .run('CREATE TABLE reviewItems ('
                 + 'itemId INTEGER,'
                 + 'quantity INTEGER,'
-                + 'username VARCHAR(255)'
+                + 'cookie VARCHAR(255)'  // Same as authentication token above
                 + ');')
           .run('CREATE TABLE orderedItems ('
                 + 'itemId INTEGER,'
@@ -40,11 +43,18 @@ module.exports = {
                 + 'unitPrice REAL,'
                 + 'quantity INTEGER,'
                 + 'totalPricePerItem REAL,'
-                + 'totalPriceOfOrder REAL,'
-                + 'username VARCHAR(255),'
-                + 'orderId VARCHAR(255),'
+                + 'cookie VARCHAR(255),' // Same as authentication token above
+                + 'orderId INTEGER,'
                 + 'timeOrdered DATETIME DEFAULT CURRENT_TIMESTAMP'
+                + ');')
+          .run('CREATE TABLE orders ('
+                + 'orderId INTEGER,'
+                + 'totalPriceOfOrder REAL,'
+                + 'statusNew DATETIME,'
+                + 'statusFulfilled DATETIME,'
+                + 'statusCancelled DATETIME'
                 + ');');
+
 
         db.run("INSERT INTO loginInfo (username, password) VALUES"
           + " ('admin', 'pass')")
